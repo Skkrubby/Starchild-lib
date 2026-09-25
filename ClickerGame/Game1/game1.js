@@ -492,7 +492,7 @@ function init() {
         elements.backBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             saveGame();
-            window.location.href = 'index.html';
+            window.location.href = '../index.html';
         });
     }
 
