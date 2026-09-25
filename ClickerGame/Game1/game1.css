@@ -1,0 +1,248 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1a0808;
+    color: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #2a0c0c;
+    border-bottom: 1px solid #4a1515;
+    position: relative;
+}
+
+.nav-btn {
+    background-color: #4a1515;
+    color: #ffffff;
+    border: 1px solid #6a2020;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.nav-btn:hover {
+    background-color: #6a2020;
+}
+
+.header h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.8rem;
+    color: #ff6b6b;
+}
+
+.game-container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    flex: 1;
+}
+
+.stats-panel {
+    background-color: #2b0e0e;
+    border: 2px solid #501b1b;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.resource-display {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.score-display {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    word-break: break-all;
+}
+
+.resource-label {
+    font-size: 1.5rem;
+    color: #cca300;
+    font-weight: bold;
+}
+
+.stat-details {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    color: #b08080;
+    font-size: 1rem;
+}
+
+.upgrades-section h2 {
+    font-size: 1.3rem;
+    color: #ff6b6b;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #4a1515;
+    padding-bottom: 5px;
+}
+
+.upgrades-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 15px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.upgrades-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.upgrades-container::-webkit-scrollbar-track {
+    background: #1a0808;
+    border-radius: 4px;
+}
+
+.upgrades-container::-webkit-scrollbar-thumb {
+    background: #4a1515;
+    border-radius: 4px;
+}
+
+.upgrade-card {
+    background-color: #381212;
+    border: 1px solid #5c1d1d;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 110px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.upgrade-card:hover:not(.disabled) {
+    background-color: #4a1818;
+    transform: translateY(-2px);
+}
+
+.upgrade-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #240b0b;
+}
+
+.upgrade-title {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #ffffff;
+    line-height: 1.3;
+}
+
+.upgrade-level {
+    font-size: 0.8rem;
+    color: #a07070;
+    margin-top: 4px;
+}
+
+.upgrade-cost {
+    font-weight: bold;
+    color: #ffd700;
+    font-size: 0.95rem;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.3s ease-out forwards;
+}
+
+footer {
+    background-color: #120404;
+    border-top: 1px solid #301010;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #806060;
+}
+
+.footer-btn {
+    background-color: #3a1010;
+    color: #d09090;
+    border: 1px solid #5a1818;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.footer-btn:hover {
+    background-color: #5a1818;
+    color: #ffffff;
+}
+
+/* Buy Mode Button Styling */
+.buy-mode-btn {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 18px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #ffd700;
+    background-color: #381212;
+    border: 1px solid #6a2020;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    outline: none;
+}
+
+.buy-mode-btn:hover {
+    background-color: #4a1818;
+    border-color: #ff6b6b;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.buy-mode-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}

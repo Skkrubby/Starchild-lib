@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miner o Dungeon</title>
+    <link rel="icon" href="pick.png">
+    <link rel="stylesheet" href="game1.css">
+</head>
+<body>
+
+    <header class="header">
+        <button id="backBtn" class="nav-btn">Back to Hub</button>
+        <h1>Miner o Dungeon</h1>
+    </header>
+
+    <main class="game-container">
+        <section class="stats-panel">
+            <div class="resource-display">
+                <span id="number" class="score-display">0</span>
+                <span class="resource-label">Gold</span>
+            </div>
+            <div class="stat-details">
+                <div class="sub-stat">Gold per click: <span id="clickPower">1</span></div>
+                <div class="sub-stat">Passives hired: <span id="goblinCount">0</span></div>
+            </div>
+        </section>
+
+        <section class="upgrades-section">
+            <h2>Upgrades & Buildings</h2>
+            <div id="upgrades" class="upgrades-container"></div>
+        </section>
+    </main>
+
+    <footer>
+        <span id="cpsDisplay">CPS: 0.00</span>
+    </footer>
+
+    <!-- Click Spark Skript eingebunden -->
+    <script src="click-spark.js"></script>
+    <script src="game1.js"></script>
+</body>
+</html>
