@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dungeon Crawler Engine v2</title>
+    <link rel="stylesheet" href="game2.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- Header / Character Stats Bar -->
+        <header class="stats-card">
+            <h1 class="game-title">Dungeon Crawler</h1>
+            <div id="stats-display" class="stats-grid">
+                <!-- Character statistics populated by JS -->
+            </div>
+        </header>
+
+        <!-- Main Console / Event Log -->
+        <main id="console" class="console-box">
+            <p class="system-msg"> Dungeon terminal initialized. Select a character class to begin your descent.</p>
+        </main>
+
+        <!-- Dynamic Action Controls -->
+        <footer id="actions-panel" class="actions-box">
+            <!-- Combat and navigation buttons populated by JS -->
+        </footer>
+    </div>
+
+    <!-- Main Logic Script -->
+    <script src="game2.js"></script>
+</body>
+</html>
