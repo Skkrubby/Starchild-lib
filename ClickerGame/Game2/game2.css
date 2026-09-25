@@ -6,6 +6,7 @@
     --accent-red: #ff495c;
     --accent-blue: #2cb67d;
     --accent-yellow: #f5a623;
+    --accent-purple: #a855f7;
     --button-bg: #1f1f28;
     --button-hover: #323242;
     --font-family: 'Courier New', Courier, monospace;
@@ -152,15 +153,8 @@ body {
     border: 1px solid var(--border-color);
 }
 
-.stat-item {
-    font-size: 0.85rem;
-}
-
-.stat-value {
-    color: var(--accent-blue);
-    font-weight: bold;
-}
-
+.stat-item { font-size: 0.85rem; }
+.stat-value { color: var(--accent-blue); font-weight: bold; }
 .stat-hp { color: var(--accent-red); }
 
 /* Level Up Box */
@@ -208,7 +202,9 @@ body {
 .system-msg { color: #888899; }
 .combat-msg { color: #e6e6e6; }
 .highlight { color: var(--accent-yellow); }
+.magic-msg { color: var(--accent-purple); }
 .damage-text { color: var(--accent-red); font-weight: bold; }
+.boss-text { color: #ff2244; font-weight: bold; text-transform: uppercase; }
 
 /* Actions */
 .actions-box {
@@ -229,21 +225,20 @@ body {
     transition: all 0.2s ease;
 }
 
-.btn:hover {
+.btn:hover:not(:disabled) {
     background-color: var(--button-hover);
     border-color: var(--accent-yellow);
 }
 
-.btn-success {
-    border-color: #1e5e3a;
-    color: var(--accent-blue);
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-color: #222;
 }
 
-.btn-danger {
-    margin-left: auto;
-    border-color: #5a2228;
-    color: var(--accent-red);
-}
+.btn-magic { border-color: #6b21a8; color: var(--accent-purple); }
+.btn-success { border-color: #1e5e3a; color: var(--accent-blue); }
+.btn-danger { margin-left: auto; border-color: #5a2228; color: var(--accent-red); }
 
 @media (max-width: 850px) {
     .main-layout { flex-direction: column; }
