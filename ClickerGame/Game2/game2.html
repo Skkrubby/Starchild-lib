@@ -3,32 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dungeon Crawler Engine v2</title>
+    <title>Dungeon Crawler Engine v4</title>
     <link rel="stylesheet" href="game2.css">
 </head>
 <body>
 
-    <div class="game-container">
-        <!-- Header / Character Stats Bar -->
-        <header class="stats-card">
-            <h1 class="game-title">Dungeon Crawler</h1>
-            <div id="stats-display" class="stats-grid">
-                <!-- Character statistics populated by JS -->
+    <div class="main-layout">
+        <!-- LEFT PANEL: Item Drops & Inventory Management -->
+        <aside class="sidebar-panel">
+            <h2 class="panel-title">Loot & Drops</h2>
+            <div id="drop-container" class="drop-box">
+                <p class="empty-msg">No item dropped. Defeat monsters to find gear.</p>
             </div>
-        </header>
+        </aside>
 
-        <!-- Main Console / Event Log -->
-        <main id="console" class="console-box">
-            <p class="system-msg"> Dungeon terminal initialized. Select a character class to begin your descent.</p>
+        <!-- RIGHT PANEL: Main Game Console & Actions (Centered Alignment) -->
+        <main class="game-container">
+            <header class="stats-card">
+                <h1 class="game-title">Dungeon Crawler</h1>
+                <div id="stats-display" class="stats-grid">
+                    <!-- Character and Monster stats rendered via JS -->
+                </div>
+            </header>
+
+            <section id="console" class="console-box">
+                <p class="system-msg"> Terminal initialized. Select a class to begin.</p>
+            </section>
+
+            <footer id="actions-panel" class="actions-box">
+                <!-- Buttons rendered via JS -->
+            </footer>
         </main>
-
-        <!-- Dynamic Action Controls -->
-        <footer id="actions-panel" class="actions-box">
-            <!-- Combat and navigation buttons populated by JS -->
-        </footer>
     </div>
 
-    <!-- Main Logic Script -->
     <script src="game2.js"></script>
 </body>
 </html>

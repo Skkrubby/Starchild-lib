@@ -1,9 +1,8 @@
 /**
- * Dungeon Crawler Game Engine v3.1
- * Features: Basic Monsters (Goblin, Skeleton, Orc), Leveling, AP Scaling & Persistence
+ * Dungeon Crawler Game Engine v4.0
+ * Features: Multiplier HP Scaling, Split Item Drop Interface, Formatted Attack Labels (*d*+* for *AP)
  */
 
-// --- CLASS DATA TEMPLATES ---
 const CLASSES = {
     warrior: {
         name: "Warrior",
@@ -22,7 +21,7 @@ const CLASSES = {
         baseHp: 12,
         hpPerLevel: 3,
         weapon: {
-            name: "Apprentice Catalyst Staff",
+            name: "Apprentice Staff",
             isCatalyst: true,
             basicAttack: { name: "Staff Bonk", diceNum: 1, diceSides: 4, bonus: 0 }
         },
@@ -33,63 +32,54 @@ const CLASSES = {
     }
 };
 
-// --- MONSTER DATABASE ---
 const MONSTER_TYPES = [
-    { 
-        name: "Goblin", 
-        hp: 10, 
-        atkDice: 1, 
-        atkSides: 4, 
-        atkBonus: 0, 
-        xpReward: 20,
-        description: "A sneaky little creature armed with a crude dagger."
+    { name: "Goblin", hp: 10, atkDice: 1, atkSides: 4, atkBonus: 0, xpReward: 20 },
+    { name: "Skeleton", hp: 18, atkDice: 1, atkSides: 6, atkBonus: 1, xpReward: 40 },
+    { name: "Orc", hp: 35, atkDice: 2, atkSides: 6, atkBonus: 2, xpReward: 85 }
+];
+
+const LOOT_TABLE = [
+    {
+        name: "Steel Longsword",
+        isCatalyst: false,
+        basicAttack: { name: "Heavy Slash", diceNum: 2, diceSides: 6, bonus: 4 },
+        ashOfWar: { name: "Spin Slash", diceNum: 1, diceSides: 10, bonus: 2 }
     },
-    { 
-        name: "Skeleton", 
-        hp: 18, 
-        atkDice: 1, 
-        atkSides: 6, 
-        atkBonus: 1, 
-        xpReward: 40,
-        description: "An animated pile of bones clutching a rusted shortsword."
-    },
-    { 
-        name: "Orc", 
-        hp: 35, 
-        atkDice: 2, 
-        atkSides: 6, 
-        atkBonus: 2, 
-        xpReward: 85,
-        description: "A hulking brute wielding a massive greataxe."
+    {
+        name: "Archmage Catalyst Wand",
+        isCatalyst: true,
+        basicAttack: { name: "Wand Tap", diceNum: 1, diceSides: 6, bonus: 1 }
     }
 ];
 
-// --- GLOBAL GAME STATE ---
 let gameState = {
     player: null,
-    enemy: null
+    enemy: null,
+    droppedItem: null
 };
 
-// --- SYSTEM FORMULAS ---
+// --- FORMULAS ---
 
-/**
- * AP Progression Rule:
- * Level 1-2: 3 AP
- * Level 3-4: 4 AP (+1 at 3)
- * Level 5-6: 5 AP (+1 at 5)
- * Level 7-8: 6 AP (+1 at 7)...
- */
 function calculateMaxAP(level) {
     if (level < 3) return 3;
     return 3 + Math.floor((level - 1) / 2);
 }
 
-// XP needed to reach next level
 function getXpForNextLevel(level) {
     return level * 50;
 }
 
-// DnD Dice Roller (e.g., 2d6 + 2)
+/**
+ * Monster HP Scaling Formula:
+ * Level 1 = 1x base HP
+ * Level 2 = 1.25x base HP
+ * Level 3 = 1.50x base HP ... rounded up to whole number
+ */
+function calculateScaledHp(baseHp, level) {
+    const multiplier = 1 + (level - 1) * 0.25;
+    return Math.ceil(baseHp * multiplier);
+}
+
 function rollDice(count, sides) {
     let total = 0;
     for (let i = 0; i < count; i++) {
@@ -98,7 +88,6 @@ function rollDice(count, sides) {
     return total;
 }
 
-// Console logger
 function log(message, type = "combat-msg") {
     const consoleElem = document.getElementById("console");
     const p = document.createElement("p");
@@ -108,13 +97,19 @@ function log(message, type = "combat-msg") {
     consoleElem.scrollTop = consoleElem.scrollHeight;
 }
 
-// --- LOCAL STORAGE MANAGER ---
+// Format dice damage strings into "*d*+* for *AP" format
+function formatDiceLabel(name, diceNum, diceSides, bonus, apCost) {
+    let bonusStr = bonus > 0 ? `+${bonus}` : '';
+    return `${name} (${diceNum}d${diceSides}${bonusStr} for ${apCost} AP)`;
+}
+
+// --- LOCAL STORAGE ---
 
 function saveGame() {
     try {
         localStorage.setItem("dungeon_crawler_save", JSON.stringify(gameState));
     } catch (e) {
-        console.error("Could not save game state", e);
+        console.error("Save failed", e);
     }
 }
 
@@ -123,7 +118,7 @@ function loadGame() {
     if (savedData) {
         try {
             gameState = JSON.parse(savedData);
-            log("Saved game loaded successfully.", "system-msg");
+            log("Saved game loaded.", "system-msg");
             return true;
         } catch (e) {
             console.error("Corrupted save data.", e);
@@ -138,7 +133,7 @@ function resetGame() {
     location.reload();
 }
 
-// --- CHARACTER CREATION & LEVELING ---
+// --- GAME LOGIC ---
 
 function selectClass(classKey) {
     const baseClass = CLASSES[classKey];
@@ -164,6 +159,32 @@ function selectClass(classKey) {
     renderUI();
 }
 
+function spawnEnemy() {
+    const playerLevel = gameState.player ? gameState.player.level : 1;
+
+    let maxIndex = 0;
+    if (playerLevel >= 2) maxIndex = 1;
+    if (playerLevel >= 4) maxIndex = 2;
+
+    const randomIndex = Math.floor(Math.random() * (maxIndex + 1));
+    const template = MONSTER_TYPES[randomIndex];
+
+    // Apply linear scaling with ceiling rounding
+    const scaledHp = calculateScaledHp(template.hp, playerLevel);
+
+    gameState.enemy = {
+        name: template.name,
+        maxHp: scaledHp,
+        currentHp: scaledHp,
+        atkDice: template.atkDice,
+        atkSides: template.atkSides,
+        atkBonus: template.atkBonus,
+        xpReward: template.xpReward + (playerLevel * 3)
+    };
+
+    log(`A wild <strong class="damage-text">${gameState.enemy.name}</strong> appears! (${gameState.enemy.currentHp} HP)`);
+}
+
 function gainXP(amount) {
     const player = gameState.player;
     player.xp += amount;
@@ -182,17 +203,15 @@ function levelUp() {
     player.level += 1;
     player.maxXp = getXpForNextLevel(player.level);
 
-    // Stat gains on Level Up
     const hpGain = baseClass.hpPerLevel;
     player.maxHp += hpGain;
-    player.currentHp = player.maxHp; // Full heal on level up
-    
-    // Recalculate AP progression
+    player.currentHp = player.maxHp;
+
     const oldAp = player.maxAp;
     player.maxAp = calculateMaxAP(player.level);
     player.currentAp = player.maxAp;
 
-    log(`🎉 <strong class="highlight">LEVEL UP! You reached Level ${player.level}!</strong>`, "system-msg");
+    log(`🎉 <strong class="highlight">LEVEL UP! Reached Level ${player.level}!</strong>`, "system-msg");
     log(`+${hpGain} Max HP (Total: ${player.maxHp}). HP fully restored!`, "system-msg");
 
     if (player.maxAp > oldAp) {
@@ -200,35 +219,34 @@ function levelUp() {
     }
 }
 
-// --- MONSTER & ENCOUNTER LOGIC ---
+function triggerLootDrop() {
+    // 50% chance to drop an item upon monster death
+    if (Math.random() < 0.50) {
+        const randomItem = LOOT_TABLE[Math.floor(Math.random() * LOOT_TABLE.length)];
+        gameState.droppedItem = randomItem;
+        log(`🎁 The monster dropped: <strong class="highlight">${randomItem.name}</strong>! Inspect left panel.`, "system-msg");
+    }
+}
 
-function spawnEnemy() {
-    const playerLevel = gameState.player ? gameState.player.level : 1;
+function equipDroppedItem() {
+    if (!gameState.droppedItem || !gameState.player) return;
 
-    // Determine monster pool based on level progression
-    let maxPoolIndex = 0;
-    if (playerLevel >= 2) maxPoolIndex = 1; // Unlocks Skeleton
-    if (playerLevel >= 4) maxPoolIndex = 2; // Unlocks Orc
+    gameState.player.weapon = gameState.droppedItem;
+    log(`Equipped <strong class="highlight">${gameState.droppedItem.name}</strong>!`, "system-msg");
+    gameState.droppedItem = null;
 
-    // Pick a random monster from unlocked pool
-    const randomIndex = Math.floor(Math.random() * (maxPoolIndex + 1));
-    const template = MONSTER_TYPES[randomIndex];
+    saveGame();
+    renderUI();
+}
 
-    // Minor stat scaling based on level
-    const hpScale = (playerLevel - 1) * 2;
+function discardDroppedItem() {
+    if (!gameState.droppedItem) return;
 
-    gameState.enemy = {
-        name: template.name,
-        description: template.description,
-        maxHp: template.hp + hpScale,
-        currentHp: template.hp + hpScale,
-        atkDice: template.atkDice,
-        atkSides: template.atkSides,
-        atkBonus: template.atkBonus,
-        xpReward: template.xpReward + (playerLevel * 3)
-    };
+    log(`Discarded ${gameState.droppedItem.name}.`, "system-msg");
+    gameState.droppedItem = null;
 
-    log(`A wild <strong class="damage-text">${gameState.enemy.name}</strong> appears! (${gameState.enemy.description})`);
+    saveGame();
+    renderUI();
 }
 
 function enemyTurn() {
@@ -237,33 +255,28 @@ function enemyTurn() {
 
     if (!enemy || enemy.currentHp <= 0) return;
 
-    // Roll monster damage
     const damage = rollDice(enemy.atkDice, enemy.atkSides) + enemy.atkBonus;
     player.currentHp = Math.max(0, player.currentHp - damage);
 
     let diceString = `${enemy.atkDice}d${enemy.atkSides}`;
     if (enemy.atkBonus > 0) diceString += `+${enemy.atkBonus}`;
 
-    log(`The <strong>${enemy.name}</strong> attacks you for <span class="damage-text">${damage} damage</span>! (${diceString})`);
+    log(`The <strong>${enemy.name}</strong> attacks for <span class="damage-text">${damage} damage</span>! (${diceString})`);
 
-    // Check player death
     if (player.currentHp <= 0) {
-        log(`☠️ <strong class="damage-text">YOU DIED!</strong> Game resetting...`, "system-msg");
-        setTimeout(() => {
-            resetGame();
-        }, 3000);
+        log(`☠️ <strong class="damage-text">YOU DIED!</strong> Resetting...`, "system-msg");
+        setTimeout(() => resetGame(), 3000);
     }
 }
 
 function checkMonsterDefeated() {
     const enemy = gameState.enemy;
     if (enemy && enemy.currentHp <= 0) {
-        log(`🏆 You defeated the <strong class="highlight">${enemy.name}</strong>!`);
+        log(`🏆 Defeated <strong class="highlight">${enemy.name}</strong>!`);
         gainXP(enemy.xpReward);
+        triggerLootDrop();
 
-        // Restore player AP for next encounter
         gameState.player.currentAp = gameState.player.maxAp;
-
         log(`----------------------------------------`, "system-msg");
         spawnEnemy();
         return true;
@@ -287,12 +300,12 @@ function executeBasicAttack() {
     player.currentAp -= 1;
     enemy.currentHp = Math.max(0, enemy.currentHp - damage);
 
-    log(`You executed <strong>${atk.name}</strong> dealing <span class="damage-text">${damage} damage</span> to ${enemy.name}!`);
+    log(`Executed <strong>${atk.name}</strong> dealing <span class="damage-text">${damage} damage</span>!`);
 
     if (!checkMonsterDefeated()) {
         if (player.currentAp === 0) {
             enemyTurn();
-            player.currentAp = player.maxAp; // Restore AP at round end
+            player.currentAp = player.maxAp;
         }
     }
 
@@ -306,7 +319,7 @@ function executeAshOfWar() {
     const remainingAp = player.currentAp;
 
     if (remainingAp < 1) {
-        log("Not enough Action Points (AP)!", "system-msg");
+        log("Not enough AP!", "system-msg");
         return;
     }
 
@@ -320,7 +333,7 @@ function executeAshOfWar() {
     player.currentAp = 0;
     enemy.currentHp = Math.max(0, enemy.currentHp - totalDamage);
 
-    log(`<strong>Ash of War: ${aow.name}</strong> consumed <span class="highlight">${remainingAp} AP</span>, dealing <span class="damage-text">${totalDamage} damage</span> to ${enemy.name}!`);
+    log(`<strong>Ash of War: ${aow.name}</strong> (${remainingAp} AP) dealt <span class="damage-text">${totalDamage} damage</span>!`);
 
     if (!checkMonsterDefeated()) {
         enemyTurn();
@@ -339,7 +352,7 @@ function executeSpell(spellIndex) {
     if (!spell) return;
 
     if (player.currentAp < spell.costAP) {
-        log(`Not enough AP to cast <strong>${spell.name}</strong>! Requires ${spell.costAP} AP.`, "system-msg");
+        log(`Not enough AP for ${spell.name}! Requires ${spell.costAP} AP.`, "system-msg");
         return;
     }
 
@@ -347,7 +360,7 @@ function executeSpell(spellIndex) {
     player.currentAp -= spell.costAP;
     enemy.currentHp = Math.max(0, enemy.currentHp - damage);
 
-    log(`Casted <strong>${spell.name}</strong> for ${spell.costAP} AP, dealing <span class="damage-text">${damage} magic damage</span> to ${enemy.name}!`);
+    log(`Casted <strong>${spell.name}</strong> dealing <span class="damage-text">${damage} magic damage</span>!`);
 
     if (!checkMonsterDefeated()) {
         if (player.currentAp === 0) {
@@ -373,12 +386,34 @@ function passTurn() {
 function renderUI() {
     const statsElem = document.getElementById("stats-display");
     const actionsElem = document.getElementById("actions-panel");
+    const dropElem = document.getElementById("drop-container");
 
     actionsElem.innerHTML = "";
 
-    // 1. Class Selection Screen
+    // 1. Render Drop Container (Left Panel)
+    if (gameState.droppedItem) {
+        const item = gameState.droppedItem;
+        const atk = item.basicAttack;
+        let atkStr = `${atk.diceNum}d${atk.diceSides}` + (atk.bonus > 0 ? `+${atk.bonus}` : '');
+
+        dropElem.innerHTML = `
+            <div class="item-card">
+                <div class="item-name">${item.name}</div>
+                <div class="item-stats">
+                    Type: ${item.isCatalyst ? 'Catalyst Staff' : 'Physical Weapon'}<br>
+                    Base Attack: ${atkStr}
+                </div>
+                <button class="btn btn-success" onclick="equipDroppedItem()">Replace current Weapon</button>
+                <button class="btn btn-danger" style="margin-left:0;" onclick="discardDroppedItem()">Discard Item</button>
+            </div>
+        `;
+    } else {
+        dropElem.innerHTML = `<p class="empty-msg">No item dropped. Defeat monsters to find gear.</p>`;
+    }
+
+    // 2. Class Selection Screen
     if (!gameState.player) {
-        statsElem.innerHTML = `<div class="stat-item">Select a Character Class to Start:</div>`;
+        statsElem.innerHTML = `<div class="stat-item">Select a Character Class:</div>`;
         actionsElem.innerHTML = `
             <button class="btn" onclick="selectClass('warrior')">Warrior (High HP, Ash of War)</button>
             <button class="btn" onclick="selectClass('mage')">Mage (Catalyst Staff, Spells)</button>
@@ -386,7 +421,7 @@ function renderUI() {
         return;
     }
 
-    // 2. Render Player & Monster Stats Bar
+    // 3. Render Stats Bar
     const p = gameState.player;
     const e = gameState.enemy;
 
@@ -399,22 +434,28 @@ function renderUI() {
         <div class="stat-item">Target: <span class="damage-text">${e ? e.name : 'None'} (${e ? e.currentHp : 0}/${e ? e.maxHp : 0} HP)</span></div>
     `;
 
-    // 3. Render Combat Actions
+    // 4. Render Formatted Attack Buttons (*d*+* for *AP)
     if (p.currentHp > 0) {
+        const atk = p.weapon.basicAttack;
+        const basicLabel = formatDiceLabel(atk.name, atk.diceNum, atk.diceSides, atk.bonus, 1);
+        
         actionsElem.innerHTML += `
-            <button class="btn" onclick="executeBasicAttack()">${p.weapon.basicAttack.name} (1 AP)</button>
+            <button class="btn" onclick="executeBasicAttack()">${basicLabel}</button>
         `;
 
         if (!p.weapon.isCatalyst && p.weapon.ashOfWar) {
+            const aow = p.weapon.ashOfWar;
+            const aowLabel = formatDiceLabel(`Ash of War: ${aow.name}`, aow.diceNum, aow.diceSides, aow.bonus, "All");
             actionsElem.innerHTML += `
-                <button class="btn" onclick="executeAshOfWar()">Ash of War: ${p.weapon.ashOfWar.name} (All AP)</button>
+                <button class="btn" onclick="executeAshOfWar()">${aowLabel}</button>
             `;
         }
 
         if (p.weapon.isCatalyst && p.spells.length > 0) {
             p.spells.forEach((spell, idx) => {
+                const spellLabel = formatDiceLabel(spell.name, spell.diceNum, spell.diceSides, spell.bonus, spell.costAP);
                 actionsElem.innerHTML += `
-                    <button class="btn" onclick="executeSpell(${idx})">${spell.name} (${spell.costAP} AP)</button>
+                    <button class="btn" onclick="executeSpell(${idx})">${spellLabel}</button>
                 `;
             });
         }
