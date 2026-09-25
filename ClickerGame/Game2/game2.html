@@ -3,31 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dungeon Crawler Engine v4</title>
-    <link rel="stylesheet" href="game2.css">
+    <title>Elden Ring Text Dungeon Engine</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="main-layout">
-        <!-- LEFT PANEL: Item Drops & Inventory Management -->
+        <!-- LEFT PANEL: Loot Drops & Equipment Management -->
         <aside class="sidebar-panel">
-            <h2 class="panel-title">Loot & Drops</h2>
+            <h2 class="panel-title">Equipment & Drops</h2>
+            
+            <div class="equipment-slots">
+                <div class="slot-box">
+                    <span class="slot-label">Main Hand:</span>
+                    <span id="main-hand-display" class="slot-value">None</span>
+                </div>
+                <div class="slot-box">
+                    <span class="slot-label">Off-Hand:</span>
+                    <span id="off-hand-display" class="slot-value">None</span>
+                </div>
+            </div>
+
+            <h3 class="sub-panel-title">Dropped Loot</h3>
             <div id="drop-container" class="drop-box">
                 <p class="empty-msg">No item dropped. Defeat monsters to find gear.</p>
             </div>
         </aside>
 
-        <!-- RIGHT PANEL: Main Game Console & Actions (Centered Alignment) -->
+        <!-- RIGHT PANEL: Game Console & Combat Actions -->
         <main class="game-container">
             <header class="stats-card">
-                <h1 class="game-title">Dungeon Crawler</h1>
+                <h1 class="game-title">Lands Between Crawler</h1>
                 <div id="stats-display" class="stats-grid">
                     <!-- Character and Monster stats rendered via JS -->
                 </div>
             </header>
 
+            <section id="level-up-panel" class="level-up-box hidden">
+                <h3 class="level-title">Level Up! Allocate 1 Stat Point:</h3>
+                <div id="stat-buttons" class="stat-btn-grid"></div>
+            </section>
+
             <section id="console" class="console-box">
-                <p class="system-msg"> Terminal initialized. Select a class to begin.</p>
+                <p class="system-msg"> Terminal initialized. Choose your starting class.</p>
             </section>
 
             <footer id="actions-panel" class="actions-box">
@@ -36,6 +54,6 @@
         </main>
     </div>
 
-    <script src="game2.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
