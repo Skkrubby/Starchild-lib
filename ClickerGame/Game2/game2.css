@@ -184,11 +184,10 @@ body {
 .console-box {
     background-color: #070709;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
-    height: 300px;
+    border-radius: 4px 4px 0 0;
+    height: 280px;
     overflow-y: auto;
     padding: 12px;
-    margin-bottom: 15px;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -205,6 +204,33 @@ body {
 .magic-msg { color: var(--accent-purple); }
 .damage-text { color: var(--accent-red); font-weight: bold; }
 .boss-text { color: #ff2244; font-weight: bold; text-transform: uppercase; }
+
+/* Tracker Panel */
+.tracker-box {
+    background-color: #0d0d12;
+    border: 1px solid var(--border-color);
+    border-top: none;
+    padding: 8px 12px;
+    margin-bottom: 15px;
+    border-radius: 0 0 4px 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tracker-title {
+    font-size: 0.75rem;
+    color: #888899;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ascii-tracker {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--accent-yellow);
+    letter-spacing: 2px;
+}
 
 /* Actions */
 .actions-box {

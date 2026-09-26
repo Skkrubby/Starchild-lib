@@ -10,15 +10,15 @@ const CLASSES = {
     warrior:   { name: "Warrior",   level: 8,  vig: 11, mnd: 12, end: 11, str: 10, dex: 16, int: 10, fai: 8,  arc: 9,  weaponId: 18 },
     hero:      { name: "Hero",      level: 7,  vig: 14, mnd: 9,  end: 12, str: 16, dex: 9,  int: 7,  fai: 8,  arc: 11, weaponId: 36 },
     bandit:    { name: "Bandit",    level: 5,  vig: 10, mnd: 11, end: 10, str: 9,  dex: 13, int: 9,  fai: 8,  arc: 14, weaponId: 0 },
-    astrologer:{ name: "Astrologer",level: 6,  vig: 9,  mnd: 15, end: 9,  str: 8,  dex: 12, int: 16, fai: 7,  arc: 9,  weaponId: 50 }, // Catalyst Staff
-    prophet:   { name: "Prophet",   level: 7,  vig: 10, mnd: 14, end: 8,  str: 11, dex: 10, int: 7,  fai: 16, arc: 11, weaponId: 51 }, // Sacred Seal
+    astrologer:{ name: "Astrologer",level: 6,  vig: 9,  mnd: 15, end: 9,  str: 8,  dex: 12, int: 16, fai: 7,  arc: 9,  weaponId: 50 },
+    prophet:   { name: "Prophet",   level: 7,  vig: 10, mnd: 14, end: 8,  str: 11, dex: 10, int: 7,  fai: 16, arc: 11, weaponId: 51 },
     samurai:   { name: "Samurai",   level: 9,  vig: 12, mnd: 11, end: 13, str: 12, dex: 15, int: 9,  fai: 8,  arc: 8,  weaponId: 8 },
     prisoner:  { name: "Prisoner",  level: 9,  vig: 11, mnd: 12, end: 11, str: 11, dex: 14, int: 14, fai: 6,  arc: 9,  weaponId: 23 },
     confessor: { name: "Confessor", level: 10, vig: 10, mnd: 13, end: 10, str: 12, dex: 12, int: 9,  fai: 14, arc: 9,  weaponId: 10 },
     wretch:    { name: "Wretch",    level: 1,  vig: 10, mnd: 10, end: 10, str: 10, dex: 10, int: 10, fai: 10, arc: 10, weaponId: 1 }
 };
 
-// --- WEAPONS DATABASE (50 Physical + 2 Catalysts) ---
+// --- WEAPONS DATABASE ---
 const WEAPONS_DATABASE = [
     { id: 0, name: "Great Knife", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "B", stat2: "arc", tier2: "D", aowName: "Blood Slash", aowDice: 1, aowSides: 8 },
     { id: 1, name: "Shortsword", diceNum: 1, diceSides: 6, ap: 1, stat1: "str", tier1: "D", stat2: "dex", tier2: "D", aowName: "Impaling Thrust", aowDice: 1, aowSides: 8 },
@@ -70,15 +70,12 @@ const WEAPONS_DATABASE = [
     { id: 47, name: "Lucerne", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "C", aowName: "Giant Hunt", aowDice: 1, aowSides: 12 },
     { id: 48, name: "Gargoyle’s Halberd", diceNum: 2, diceSides: 6, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Vacuum Slice", aowDice: 2, aowSides: 6 },
     { id: 49, name: "Vulgar Militia Saw", diceNum: 1, diceSides: 12, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Serrated Slash", aowDice: 1, aowSides: 10 },
-    
-    // Catalysts for Magic Spells
     { id: 50, name: "Academy Glintstone Staff", isCatalyst: true, type: "sorcery", diceNum: 1, diceSides: 4, ap: 1, stat1: "int", tier1: "A", aowName: "Staff Bonk", aowDice: 1, aowSides: 4 },
     { id: 51, name: "Finger Seal", isCatalyst: true, type: "incantation", diceNum: 1, diceSides: 4, ap: 1, stat1: "fai", tier1: "A", aowName: "Seal Strike", aowDice: 1, aowSides: 4 }
 ];
 
-// --- 30 ELDEN RING SPELLS & INCANTATIONS ---
+// --- 30 SPELLS ---
 const SPELLS_DATABASE = [
-    // Sorceries (INT)
     { name: "Glintstone Pebble", type: "sorcery", reqStat: "int", minStat: 10, ap: 1, diceNum: 1, diceSides: 8, tier: "B" },
     { name: "Swift Glintstone Shard", type: "sorcery", reqStat: "int", minStat: 12, ap: 1, diceNum: 1, diceSides: 6, tier: "A" },
     { name: "Glintstone Cometshard", type: "sorcery", reqStat: "int", minStat: 18, ap: 2, diceNum: 2, diceSides: 8, tier: "A" },
@@ -94,8 +91,6 @@ const SPELLS_DATABASE = [
     { name: "Ranni's Dark Moon", type: "sorcery", reqStat: "int", minStat: 35, ap: 3, diceNum: 5, diceSides: 8, tier: "S" },
     { name: "Comet Azur", type: "sorcery", reqStat: "int", minStat: 40, ap: 4, diceNum: 6, diceSides: 10, tier: "S" },
     { name: "Stars of Ruin", type: "sorcery", reqStat: "int", minStat: 32, ap: 3, diceNum: 4, diceSides: 8, tier: "A" },
-
-    // Incantations (FAI)
     { name: "Catch Flame", type: "incantation", reqStat: "fai", minStat: 10, ap: 1, diceNum: 1, diceSides: 8, tier: "A" },
     { name: "Flame Sling", type: "incantation", reqStat: "fai", minStat: 12, ap: 1, diceNum: 1, diceSides: 10, tier: "B" },
     { name: "Lightning Spear", type: "incantation", reqStat: "fai", minStat: 17, ap: 2, diceNum: 2, diceSides: 8, tier: "A" },
@@ -113,9 +108,8 @@ const SPELLS_DATABASE = [
     { name: "Wrath of Gold", type: "incantation", reqStat: "fai", minStat: 32, ap: 2, diceNum: 3, diceSides: 10, tier: "A" }
 ];
 
-// --- 40 MONSTERS WITH BOSSES EVERY 10 ENCOUNTERS ---
+// --- 40 MONSTERS WITH BOSSES ---
 const MONSTER_TIERS = [
-    // Tier 1 (Levels 1-10)
     [
         { name: "Wandering Noble", hp: 12, dice: 1, sides: 4, bonus: 0, xp: 15 },
         { name: "Godrick Soldier", hp: 18, dice: 1, sides: 6, bonus: 1, xp: 25 },
@@ -127,7 +121,6 @@ const MONSTER_TIERS = [
         { name: "Pumpkin Head", hp: 48, dice: 2, sides: 6, bonus: 2, xp: 85 },
         { name: "Bloodhound Knight", hp: 38, dice: 2, sides: 4, bonus: 4, xp: 95 }
     ],
-    // Tier 2 (Levels 11-20)
     [
         { name: "Raya Lucaria Soldier", hp: 32, dice: 1, sides: 8, bonus: 2, xp: 55 },
         { name: "Cuckoo Knight", hp: 55, dice: 1, sides: 10, bonus: 3, xp: 100 },
@@ -139,7 +132,6 @@ const MONSTER_TIERS = [
         { name: "Vulgar Militia Warrior", hp: 36, dice: 1, sides: 12, bonus: 2, xp: 85 },
         { name: "Redmane Knight", hp: 80, dice: 2, sides: 8, bonus: 4, xp: 190 }
     ],
-    // Tier 3 (Levels 21-30)
     [
         { name: "Leyndell Soldier", hp: 58, dice: 1, sides: 10, bonus: 3, xp: 130 },
         { name: "Leyndell Knight", hp: 100, dice: 2, sides: 8, bonus: 4, xp: 240 },
@@ -151,7 +143,6 @@ const MONSTER_TIERS = [
         { name: "Abductor Virgin", hp: 140, dice: 3, sides: 6, bonus: 3, xp: 330 },
         { name: "Draconic Tree Sentinel", hp: 180, dice: 2, sides: 10, bonus: 6, xp: 450 }
     ],
-    // Tier 4 (Levels 31-40+)
     [
         { name: "Fire Monk", hp: 110, dice: 2, sides: 8, bonus: 4, xp: 300 },
         { name: "Prelate of Flame", hp: 210, dice: 3, sides: 8, bonus: 5, xp: 520 },
@@ -181,7 +172,6 @@ let gameState = {
 };
 
 // --- FORMULAS ---
-
 function calculateMaxHp(vig) { return 10 + (vig * 2); }
 function calculateMaxAp(end) { return 2 + Math.floor(end / 5); }
 function calculateScaledHp(baseHp, level) { return Math.ceil(baseHp * (1 + (level - 1) * 0.25)); }
@@ -220,7 +210,6 @@ function formatDiceLabel(name, diceNum, diceSides, bonus, apCost) {
 }
 
 // --- LOCAL STORAGE ---
-
 function saveGame() {
     try { localStorage.setItem("er_dungeon_save_v2", JSON.stringify(gameState)); } catch (e) {}
 }
@@ -243,7 +232,6 @@ function resetGame() {
 }
 
 // --- GAME LOGIC ---
-
 function selectClass(classKey) {
     const base = CLASSES[classKey];
     if (!base) return;
@@ -285,13 +273,11 @@ function spawnEnemy() {
         return;
     }
 
-    // Determine normal tier index
     let tierIdx = 0;
     if (playerLevel >= 11) tierIdx = 1;
     if (playerLevel >= 21) tierIdx = 2;
     if (playerLevel >= 31) tierIdx = 3;
 
-    // 15% Chance for Out-of-Level higher tier enemy
     if (Math.random() < 0.15 && tierIdx < MONSTER_TIERS.length - 1) {
         tierIdx += 1;
         log(`⚠️ <span class="highlight">DANGER! A high-level threat from lower depths approaches!</span>`, "system-msg");
@@ -339,7 +325,6 @@ function allocateStat(statKey) {
 }
 
 function triggerLootDrop() {
-    // 60% Chance to drop weapon or catalyst
     if (Math.random() < 0.60) {
         const randWeapon = WEAPONS_DATABASE[Math.floor(Math.random() * WEAPONS_DATABASE.length)];
         gameState.droppedItem = randWeapon;
@@ -358,7 +343,7 @@ function equipDroppedItem(slot) {
         log(`Equipped <strong class="highlight">${gameState.droppedItem.name}</strong> to Off-Hand.`, "system-msg");
     }
 
-    gameState.droppedItem = null; // Unfreezes combat actions
+    gameState.droppedItem = null;
     saveGame();
     renderUI();
 }
@@ -366,7 +351,7 @@ function equipDroppedItem(slot) {
 function discardDroppedItem() {
     if (!gameState.droppedItem) return;
     log(`Discarded ${gameState.droppedItem.name}.`, "system-msg");
-    gameState.droppedItem = null; // Unfreezes combat actions
+    gameState.droppedItem = null;
     saveGame();
     renderUI();
 }
@@ -403,10 +388,9 @@ function checkEnemyDefeated() {
     return false;
 }
 
-// --- ATTACKS & SPELLS ---
-
+// --- COMBAT ACTIONS ---
 function executeSingleAttack(slot) {
-    if (gameState.droppedItem) return; // Frozen during loot decision
+    if (gameState.droppedItem) return;
 
     const p = gameState.player;
     const e = gameState.enemy;
@@ -538,8 +522,31 @@ function passTurn() {
     renderUI();
 }
 
-// --- RENDER ENGINE ---
+// --- RENDER ASCII TRACKER ---
+function renderAsciiTracker() {
+    const trackerElem = document.getElementById("boss-tracker");
+    if (!trackerElem) return;
 
+    const currentProgress = gameState.killCount % 10;
+    const isBoss = gameState.enemy && gameState.enemy.isBoss;
+
+    let trackerStr = "[ ";
+    for (let i = 0; i < 10; i++) {
+        if (i === currentProgress) {
+            trackerStr += isBoss ? `<span class="boss-text">@</span>` : `<span class="highlight">@</span>`;
+        } else if (i === 9) {
+            trackerStr += `<span class="boss-text">B</span>`;
+        } else {
+            trackerStr += `<span style="color:#444;">x</span>`;
+        }
+        if (i < 9) trackerStr += "-";
+    }
+    trackerStr += ` ] (${currentProgress}/10)`;
+
+    trackerElem.innerHTML = trackerStr;
+}
+
+// --- RENDER ENGINE ---
 function renderUI() {
     const statsElem = document.getElementById("stats-display");
     const actionsElem = document.getElementById("actions-panel");
@@ -552,24 +559,22 @@ function renderUI() {
 
     actionsElem.innerHTML = "";
 
-    // 1. Class Selection Screen
     if (!gameState.player) {
         statsElem.innerHTML = `<div class="stat-item">Select starting Elden Ring class:</div>`;
         Object.keys(CLASSES).forEach(key => {
             const c = CLASSES[key];
             actionsElem.innerHTML += `<button class="btn" onclick="selectClass('${key}')">${c.name} (Lvl ${c.level})</button>`;
         });
+        renderAsciiTracker();
         return;
     }
 
     const p = gameState.player;
     const e = gameState.enemy;
 
-    // 2. Equipment Slots UI
     mainDisplay.textContent = p.mainHand ? p.mainHand.name : "None";
     offDisplay.textContent = p.offHand ? p.offHand.name : "None";
 
-    // 3. Loot Box Panel
     if (gameState.droppedItem) {
         const item = gameState.droppedItem;
         const tempBonus = calculateWeaponBonus(item, p.stats);
@@ -589,7 +594,6 @@ function renderUI() {
         dropElem.innerHTML = `<p class="empty-msg">No item dropped. Defeat monsters to find gear.</p>`;
     }
 
-    // 4. Level-Up Panel
     if (gameState.pendingStatPoint) {
         levelPanel.classList.remove("hidden");
         statButtons.innerHTML = "";
@@ -600,7 +604,6 @@ function renderUI() {
         levelPanel.classList.add("hidden");
     }
 
-    // 5. Header Stats Bar
     statsElem.innerHTML = `
         <div class="stat-item">Class: <span class="stat-value">${p.className}</span></div>
         <div class="stat-item">Lvl: <span class="stat-value">${p.level}</span></div>
@@ -611,11 +614,9 @@ function renderUI() {
         <div class="stat-item">Target: <span class="${e && e.isBoss ? 'boss-text' : 'damage-text'}">${e ? e.name : 'None'} (${e ? e.currentHp : 0}/${e ? e.maxHp : 0} HP)</span></div>
     `;
 
-    // 6. Action Buttons (*d*+* for *AP) — Disabled if Loot Choice is active
     const isFrozen = gameState.droppedItem !== null;
 
     if (p.currentHp > 0) {
-        // Main-Hand Action
         if (p.mainHand) {
             const b1 = calculateWeaponBonus(p.mainHand, p.stats);
             const label1 = formatDiceLabel(p.mainHand.name, p.mainHand.diceNum, p.mainHand.diceSides, b1, p.mainHand.ap);
@@ -625,14 +626,12 @@ function renderUI() {
             actionsElem.innerHTML += `<button class="btn" ${isFrozen ? 'disabled' : ''} onclick="executeAshOfWar('main')">${aowLabel1}</button>`;
         }
 
-        // Off-Hand Action
         if (p.offHand) {
             const b2 = calculateWeaponBonus(p.offHand, p.stats);
             const label2 = formatDiceLabel(`Off: ${p.offHand.name}`, p.offHand.diceNum, p.offHand.diceSides, b2, p.offHand.ap);
             actionsElem.innerHTML += `<button class="btn" ${isFrozen ? 'disabled' : ''} onclick="executeSingleAttack('off')">${label2}</button>`;
         }
 
-        // Dual Attack Option
         if (p.mainHand && p.offHand && !p.mainHand.isCatalyst && !p.offHand.isCatalyst) {
             const b1 = calculateWeaponBonus(p.mainHand, p.stats);
             const b2 = calculateWeaponBonus(p.offHand, p.stats);
@@ -642,7 +641,6 @@ function renderUI() {
             actionsElem.innerHTML += `<button class="btn" ${isFrozen ? 'disabled' : ''} onclick="executeDualAttack()">${dualLabel}</button>`;
         }
 
-        // Render Eligible Spells if wielding Catalyst
         const hasCatalyst = (p.mainHand && p.mainHand.isCatalyst) || (p.offHand && p.offHand.isCatalyst);
         if (hasCatalyst) {
             SPELLS_DATABASE.forEach((spell, idx) => {
@@ -658,6 +656,8 @@ function renderUI() {
     }
 
     actionsElem.innerHTML += `<button class="btn btn-danger" onclick="resetGame()">Reset Save</button>`;
+
+    renderAsciiTracker();
 }
 
 // --- ENTRY POINT ---
