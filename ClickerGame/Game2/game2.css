@@ -78,11 +78,20 @@ body {
 .slot-box {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     font-size: 0.85rem;
 }
 
 .slot-label { color: #888; }
-.slot-value { color: var(--accent-blue); font-weight: bold; }
+.slot-value {
+    min-width: 0;
+    flex: 1;
+    margin-left: 12px;
+    color: var(--accent-blue);
+    font-weight: bold;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
 
 .drop-box {
     background: #0f0f12;
@@ -90,6 +99,53 @@ body {
     padding: 12px;
     border-radius: 4px;
     min-height: 160px;
+}
+
+.drop-box--glowing,
+.level-up-box.level-up-box--glowing {
+    border: 2px solid transparent;
+    background-size: auto, 300% 300%;
+    animation: loot-rainbow-border 4s linear infinite, loot-rainbow-glow 1.8s ease-in-out infinite alternate, loot-rainbow-blink 0.65s ease-in-out 2;
+}
+
+.drop-box--glowing {
+    background:
+        linear-gradient(#0f0f12, #0f0f12) padding-box,
+        linear-gradient(120deg, #ff4057, #ffb52e, #f4ed45, #3ce783, #39d9ff, #6477ff, #dc5bff, #ff4057) border-box;
+}
+
+.level-up-box.level-up-box--glowing {
+    background:
+        linear-gradient(#1a1a24, #1a1a24) padding-box,
+        linear-gradient(120deg, #ff4057, #ffb52e, #f4ed45, #3ce783, #39d9ff, #6477ff, #dc5bff, #ff4057) border-box;
+}
+
+@keyframes loot-rainbow-border {
+    to { background-position: 0 0, 200% 50%; }
+}
+
+@keyframes loot-rainbow-glow {
+    0%, 100% {
+        box-shadow: 0 0 7px rgba(255, 64, 87, 0.5), 0 0 14px rgba(100, 119, 255, 0.35), inset 0 0 12px rgba(220, 91, 255, 0.12);
+    }
+    50% {
+        box-shadow: 0 0 9px rgba(60, 231, 131, 0.55), 0 0 18px rgba(57, 217, 255, 0.4), inset 0 0 14px rgba(255, 181, 46, 0.14);
+    }
+}
+
+@keyframes loot-rainbow-blink {
+    0%, 100% { filter: brightness(1) saturate(1); }
+    50% { filter: brightness(1.8) saturate(1.45); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .drop-box.drop-box--glowing,
+    .level-up-box.level-up-box--glowing,
+    .btn.class-choice-btn {
+        background-position: 0 0, 50% 50%;
+        animation: none;
+        box-shadow: 0 0 8px rgba(255, 64, 87, 0.45), 0 0 16px rgba(57, 217, 255, 0.35), inset 0 0 12px rgba(220, 91, 255, 0.12);
+    }
 }
 
 .item-card {
@@ -103,6 +159,24 @@ body {
     font-weight: bold;
     font-size: 0.95rem;
 }
+
+.epic-text {
+    color: #db83ff;
+    font-weight: 900;
+    text-shadow: 0 0 5px rgba(195, 70, 255, 0.85), 0 0 12px rgba(145, 48, 230, 0.55);
+}
+
+.talisman-rarity {
+    align-self: flex-start;
+    margin-top: -4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.talisman-rarity--regular { color: #aaaab6; }
+.talisman-rarity--epic { color: #db83ff; text-shadow: 0 0 6px rgba(195, 70, 255, 0.7); }
+.talisman-rarity--legendary { font-size: 0.7rem; }
 
 .item-stats {
     font-size: 0.8rem;
@@ -137,9 +211,19 @@ body {
 }
 
 .stats-card {
+    position: relative;
     border-bottom: 2px solid var(--border-color);
+    padding-top: 34px;
     padding-bottom: 12px;
     margin-bottom: 15px;
+}
+
+.tutorial-open {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-color: var(--accent-yellow);
+    color: var(--accent-yellow);
 }
 
 .stats-grid {
@@ -204,6 +288,27 @@ body {
 .magic-msg { color: var(--accent-purple); }
 .damage-text { color: var(--accent-red); font-weight: bold; }
 .boss-text { color: #ff2244; font-weight: bold; text-transform: uppercase; }
+.crit-text,
+.shard-text {
+    color: #ffe85c;
+    background: linear-gradient(90deg, #ff4057, #ffb52e, #f4ed45, #3ce783, #39d9ff, #6477ff, #dc5bff, #ff4057);
+    background-size: 300% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+    filter: drop-shadow(0 0 4px rgba(255, 220, 95, 0.65));
+    animation: crit-rainbow 3s linear infinite;
+}
+
+@keyframes crit-rainbow {
+    to { background-position: 300% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .crit-text,
+    .shard-text { animation: none; }
+}
 
 /* Tracker Panel */
 .tracker-box {
@@ -256,6 +361,15 @@ body {
     border-color: var(--accent-yellow);
 }
 
+.class-choice-btn {
+    border: 2px solid transparent;
+    background:
+        linear-gradient(var(--button-bg), var(--button-bg)) padding-box,
+        linear-gradient(120deg, #ff4057, #ffb52e, #f4ed45, #3ce783, #39d9ff, #6477ff, #dc5bff, #ff4057) border-box;
+    background-size: auto, 300% 300%;
+    animation: loot-rainbow-border 4s linear infinite, loot-rainbow-glow 1.8s ease-in-out infinite alternate, loot-rainbow-blink 0.8s ease-in-out infinite;
+}
+
 .btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
@@ -266,7 +380,172 @@ body {
 .btn-success { border-color: #1e5e3a; color: var(--accent-blue); }
 .btn-danger { margin-left: auto; border-color: #5a2228; color: var(--accent-red); }
 
+.tutorial-page {
+    align-items: flex-start;
+    padding: 24px;
+}
+
+.tutorial-shell {
+    width: min(960px, 100%);
+}
+
+.tutorial-nav {
+    display: inline-block;
+    flex: 0 0 auto;
+    color: var(--accent-yellow);
+    border-color: var(--accent-yellow);
+    text-decoration: none;
+}
+
+.tutorial-header,
+.tutorial-arena-heading,
+.tutorial-footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.tutorial-header {
+    margin-bottom: 18px;
+}
+
+.tutorial-header .game-title {
+    margin: 3px 0 6px;
+    color: var(--accent-yellow);
+    font-size: 1.35rem;
+    text-align: left;
+}
+
+.tutorial-kicker {
+    color: var(--accent-blue);
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.tutorial-subtitle,
+.tutorial-guide p,
+.tutorial-footer {
+    color: #b5b5c0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.tutorial-guide-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.tutorial-guide {
+    padding: 12px;
+    background: #0d0d12;
+    border-left: 2px solid var(--accent-yellow);
+}
+
+.tutorial-guide h2 {
+    margin-bottom: 5px;
+    color: var(--primary-color);
+    font-size: 0.85rem;
+}
+
+.tutorial-arena {
+    padding: 16px;
+    background: #09090c;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.tutorial-arena-heading {
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.tutorial-arena-heading h2 {
+    margin-top: 3px;
+    font-size: 1rem;
+}
+
+.tutorial-fight-status {
+    color: var(--accent-yellow);
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.tutorial-fight-status.is-finished { color: var(--accent-red); }
+
+.tutorial-vitals {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 5px 12px;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 0.75rem;
+}
+
+.tutorial-health {
+    grid-column: 1 / -1;
+    width: 100%;
+    height: 9px;
+    border: 0;
+    border-radius: 5px;
+    overflow: hidden;
+    background: #282830;
+    accent-color: var(--accent-red);
+}
+
+.tutorial-health::-webkit-progress-bar { background: #282830; }
+.enemy-health::-webkit-progress-value { background: #ec5362; }
+.player-health::-webkit-progress-value { background: #36c98b; }
+.enemy-health::-moz-progress-bar { background: #ec5362; }
+.player-health::-moz-progress-bar { background: #36c98b; }
+
+.tutorial-ap {
+    grid-column: 1 / -1;
+    color: var(--accent-blue);
+    font-weight: bold;
+}
+
+.tutorial-narration {
+    min-height: 42px;
+    margin-bottom: 8px;
+    color: #e5e5e8;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.tutorial-log {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 100px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    color: #9b9ba7;
+    font-size: 0.75rem;
+}
+
+.tutorial-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.tutorial-footer {
+    align-items: center;
+    margin-top: 12px;
+}
+
 @media (max-width: 850px) {
     .main-layout { flex-direction: column; }
     .game-container, .sidebar-panel { width: 100%; min-width: 100%; }
+}
+
+@media (max-width: 600px) {
+    .tutorial-page { padding: 16px; }
+    .tutorial-guide-grid { grid-template-columns: 1fr; }
+    .tutorial-arena { padding: 12px; }
+    .tutorial-footer { align-items: flex-start; flex-direction: column; }
+    .tutorial-header { flex-direction: column; }
 }

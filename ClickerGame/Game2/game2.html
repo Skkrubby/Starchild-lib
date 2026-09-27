@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elden Ring Text Dungeon Engine</title>
+    <title>Elden Text Based Ring</title>
     <link rel="stylesheet" href="game2.css">
 </head>
 <body>
@@ -24,6 +24,18 @@
                 </div>
             </div>
 
+            <h3 class="sub-panel-title">Talismans</h3>
+            <div class="equipment-slots talisman-slots">
+                <div class="slot-box">
+                    <span class="slot-label">Slot 1:</span>
+                    <span id="talisman-slot-1" class="slot-value">Empty</span>
+                </div>
+                <div class="slot-box">
+                    <span class="slot-label">Slot 2:</span>
+                    <span id="talisman-slot-2" class="slot-value">Empty</span>
+                </div>
+            </div>
+
             <h3 class="sub-panel-title">Dropped Loot</h3>
             <div id="drop-container" class="drop-box">
                 <p class="empty-msg">No item dropped. Defeat monsters to find gear.</p>
@@ -33,7 +45,8 @@
         <!-- RIGHT PANEL: Game Console & Actions -->
         <main class="game-container">
             <header class="stats-card">
-                <h1 class="game-title">Lands Between Crawler</h1>
+                <a class="tutorial-open btn" href="tutorial.html">How to Play</a>
+                <h1 class="game-title">Elden Text Based Ring</h1>
                 <div id="stats-display" class="stats-grid">
                     <!-- Stats rendered via JS -->
                 </div>
@@ -45,7 +58,7 @@
             </section>
 
             <section id="console" class="console-box">
-                <p class="system-msg">> Terminal initialized. Choose your starting class.</p>
+                <p class="system-msg"> Terminal initialized. Choose your starting class.</p>
             </section>
 
             <!-- ASCII BOSS PROGRESSION TRACKER -->
