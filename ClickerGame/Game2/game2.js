@@ -495,7 +495,8 @@ function selectClass(classKey) {
     const base = CLASSES[classKey];
     if (!base) return;
 
-    const startingWeapon = WEAPONS_DATABASE[base.weaponId];
+    const startingWeapon = WEAPONS_DATABASE.find(weapon => weapon.id === base.weaponId);
+    if (!startingWeapon) return;
     gameState.pendingStatPoints = 0;
 
     gameState.player = {
@@ -1209,7 +1210,7 @@ function renderUI() {
     if (!gameState.player) {
         talismanSlot1Display.textContent = "Empty";
         talismanSlot2Display.textContent = "Empty";
-        statsElem.innerHTML = `<div class="stat-item">Select starting Elden Ring class:</div>`;
+        statsElem.innerHTML = `<div class="stat-item">Choose starting class:</div>`;
         Object.keys(CLASSES).forEach(key => {
             const c = CLASSES[key];
             actionsElem.innerHTML += `<button class="btn class-choice-btn" onclick="selectClass('${key}')">${c.name} (Lvl ${c.level})</button>`;
