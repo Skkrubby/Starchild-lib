@@ -89,6 +89,10 @@ body {
     margin-bottom: 12px;
 }
 
+.game-card--new h2 {
+    padding-right: 72px;
+}
+
 .game-card p {
     color: #cccccc;
     font-size: 0.95rem;

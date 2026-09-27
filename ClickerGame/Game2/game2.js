@@ -8,39 +8,37 @@ const HEAVY_WEAPON_IDS = new Set([25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
 
 // --- 6 BASE CLASSES ---
 const CLASSES = {
-    vagabond:  { name: "Vagabond",  level: 9,  vig: 15, end: 11, str: 14, dex: 13, int: 9,  fai: 9,  weaponId: 11 },
-    bandit:    { name: "Bandit",    level: 5,  vig: 10, end: 10, str: 9,  dex: 13, int: 9,  fai: 8,  weaponId: 0 },
-    astrologer:{ name: "Astrologer",level: 6,  vig: 9,  end: 9,  str: 8,  dex: 12, int: 16, fai: 7,  weaponId: 50 },
-    prophet:   { name: "Prophet",   level: 7,  vig: 10, end: 8,  str: 11, dex: 10, int: 7,  fai: 16, weaponId: 51 },
-    samurai:   { name: "Samurai",   level: 9,  vig: 12, end: 13, str: 12, dex: 15, int: 9,  fai: 8,  weaponId: 8 },
-    wretch:    { name: "Wretch",    level: 1,  vig: 10, end: 10, str: 10, dex: 10, int: 10, fai: 10, weaponId: 1 }
+    vagabond:  { name: "Outcast",  level: 9,  vig: 15, end: 11, str: 14, dex: 13, int: 9,  fai: 9,  weaponId: 11 },
+    bandit:    { name: "Bandit",    level: 5,  vig: 10, end: 10, str: 9,  dex: 19, int: 9,  fai: 8,  weaponId: 0 },
+    astrologer:{ name: "Stargazer",level: 6,  vig: 9,  end: 9,  str: 8,  dex: 12, int: 16, fai: 7,  weaponId: 50 },
+    prophet:   { name: "Bishhop",   level: 7,  vig: 10, end: 8,  str: 11, dex: 10, int: 7,  fai: 16, weaponId: 51 },
+    samurai:   { name: "Ronin",   level: 9,  vig: 13, end: 14, str: 10, dex: 15, int: 9,  fai: 8,  weaponId: 8 },
+    wretch:    { name: "Deserted",    level: 1,  vig: 10, end: 10, str: 10, dex: 10, int: 10, fai: 10, weaponId: 1 }
 };
 
 // --- WEAPONS DATABASE ---
 const WEAPONS_DATABASE = [
-    { id: 0, name: "Great Knife", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "B", stat2: "dex", tier2: "D", aowName: "Blood Slash", aowDice: 1, aowSides: 8 },
+    { id: 0, name: "Cutlass", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "B", stat2: "dex", tier2: "D", aowName: "Blood Slash", aowDice: 1, aowSides: 8 },
     { id: 1, name: "Shortsword", diceNum: 1, diceSides: 6, ap: 1, stat1: "str", tier1: "D", stat2: "dex", tier2: "D", aowName: "Impaling Thrust", aowDice: 1, aowSides: 8 },
-    { id: 2, name: "Parrying Dagger", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "A", tier2: null, aowName: "Parry Strike", aowDice: 1, aowSides: 6 },
-    { id: 3, name: "Misericorde", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "S", tier2: null, aowName: "Critical Thrust", aowDice: 1, aowSides: 10 },
-    { id: 4, name: "Wakizashi", diceNum: 1, diceSides: 6, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "E", aowName: "Blade Rush", aowDice: 1, aowSides: 8 },
-    { id: 5, name: "Cinquedea", diceNum: 1, diceSides: 6, ap: 1, stat1: "str", tier1: "S", tier2: null, aowName: "Beastial Slice", aowDice: 1, aowSides: 8 },
+    { id: 2, name: "Main Gauche", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "A", tier2: null, aowName: "Parry Strike", aowDice: 1, aowSides: 6 },
+    { id: 3, name: "Misericorde", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "S", tier2: null, aowName: "Backhanded Thrust", aowDice: 1, aowSides: 10 },
+    { id: 4, name: "Short Katana", diceNum: 1, diceSides: 6, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "E", aowName: "Blade Rush", aowDice: 1, aowSides: 8 },
+    { id: 5, name: "Five Fingerd Dagger", diceNum: 1, diceSides: 6, ap: 1, stat1: "str", tier1: "S", tier2: null, aowName: "Beastial Slice", aowDice: 1, aowSides: 8 },
     { id: 6, name: "Scorpion’s Stinger", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "B", stat2: "dex", tier2: "C", aowName: "Toxic Sting", aowDice: 1, aowSides: 6 },
-    { id: 7, name: "Celebration’s Sickle", diceNum: 1, diceSides: 6, ap: 1, stat1: "dex", tier1: "C", tier2: null, aowName: "Harvest Flail", aowDice: 1, aowSides: 8 },
-    { id: 8, name: "Uchigatana", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Unsheathe", aowDice: 2, aowSides: 6 },
-    { id: 9, name: "Nagakiba", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "A", stat2: "str", tier2: "E", aowName: "Piercing Fang", aowDice: 1, aowSides: 12 },
+    { id: 7, name: "Outlander Sickle", diceNum: 1, diceSides: 6, ap: 1, stat1: "dex", tier1: "C", tier2: null, aowName: "Harvest Flail", aowDice: 1, aowSides: 8 },
+    { id: 8, name: "Forgotten Katana", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Unsheathe", aowDice: 2, aowSides: 6 },
+    { id: 9, name: "Odachi", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "A", stat2: "str", tier2: "E", aowName: "Piercing Fang", aowDice: 1, aowSides: 12 },
     { id: 10, name: "Broadsword", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Square Off", aowDice: 1, aowSides: 10 },
     { id: 11, name: "Longsword", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "C", stat2: "dex", tier2: "C", aowName: "Impaling Thrust", aowDice: 1, aowSides: 8 },
-    { id: 12, name: "Serpentbone Blade", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "A", stat2: "dex", tier2: "D", aowName: "Venomous Flurry", aowDice: 1, aowSides: 8 },
+    { id: 12, name: "Serpentine Blade", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "A", stat2: "dex", tier2: "D", aowName: "Venomous Flurry", aowDice: 1, aowSides: 8 },
     { id: 13, name: "Dragon Scale Blade", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "S", tier2: null, aowName: "Ice Lightning Sword", aowDice: 2, aowSides: 6 },
-    { id: 14, name: "Cane Sword", diceNum: 1, diceSides: 8, ap: 1, stat1: "dex", tier1: "C", tier2: null, aowName: "Hidden Thrust", aowDice: 1, aowSides: 8 },
+    { id: 14, name: "Stone Sword", diceNum: 1, diceSides: 8, ap: 1, stat1: "dex", tier1: "C", tier2: null, aowName: "Hidden Thrust", aowDice: 1, aowSides: 8 },
     { id: 15, name: "Warhawk’s Talon", diceNum: 1, diceSides: 8, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "E", aowName: "Talon Flurry", aowDice: 1, aowSides: 10 },
     { id: 16, name: "Weathered Straight Sword", diceNum: 1, diceSides: 6, ap: 1, stat1: "str", tier1: "D", stat2: "dex", tier2: "D", aowName: "Wild Slash", aowDice: 1, aowSides: 8 },
-    { id: 17, name: "Miquellan Knight’s Sword", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "C", stat2: "fai", tier2: "C", aowName: "Sacred Blade", aowDice: 1, aowSides: 10 },
+    { id: 17, name: "Holy Knight’s Sword", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "C", stat2: "fai", tier2: "C", aowName: "Sacred Blade", aowDice: 1, aowSides: 10 },
     { id: 18, name: "Scimitar", diceNum: 1, diceSides: 6, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "E", aowName: "Spinning Slash", aowDice: 1, aowSides: 8 },
     { id: 19, name: "Falchion", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "C", stat2: "dex", tier2: "C", aowName: "Vacuum Slice", aowDice: 1, aowSides: 10 },
-    { id: 20, name: "Grossmesser", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "B", tier2: null, aowName: "Heavy Cleave", aowDice: 1, aowSides: 10 },
-    { id: 21, name: "Bandit’s Curved Sword", diceNum: 1, diceSides: 6, ap: 1, stat1: "dex", tier1: "S", tier2: null, aowName: "Bloodblade Dance", aowDice: 1, aowSides: 8 },
-    { id: 22, name: "Rapier", diceNum: 1, diceSides: 6, ap: 1, stat1: "dex", tier1: "A", tier2: null, aowName: "Repeating Thrust", aowDice: 1, aowSides: 6 },
+    { id: 20, name: "Grossmesser", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "B", tier2: null, aowName: "Spinning Slash", aowDice: 1, aowSides: 8 },
     { id: 23, name: "Estoc", diceNum: 1, diceSides: 8, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Shield Crash", aowDice: 1, aowSides: 8 },
     { id: 24, name: "Cleanrot Knight’s Sword", diceNum: 1, diceSides: 8, ap: 1, stat1: "dex", tier1: "B", stat2: "fai", tier2: "D", aowName: "Sacred Phalanx", aowDice: 1, aowSides: 10 },
     { id: 25, name: "Great Epee", diceNum: 1, diceSides: 10, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Giant Hunt", aowDice: 1, aowSides: 12 },
@@ -49,9 +47,9 @@ const WEAPONS_DATABASE = [
     { id: 28, name: "Zweihänder", diceNum: 3, diceSides: 6, ap: 2, stat1: "str", tier1: "A", stat2: "dex", tier2: "D", aowName: "Waves of Darkness", aowDice: 1, aowSides: 12 },
     { id: 29, name: "Flamberge", diceNum: 2, diceSides: 6, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Bloody Slash", aowDice: 1, aowSides: 10 },
     { id: 30, name: "Knight’s Greatsword", diceNum: 2, diceSides: 6, ap: 1, stat1: "dex", tier1: "A", tier2: null, aowName: "Spinning Slash", aowDice: 1, aowSides: 10 },
-    { id: 31, name: "Banished Knight’s Greatsword", diceNum: 2, diceSides: 6, ap: 1, stat1: "str", tier1: "A", tier2: null, aowName: "Impaling Thrust", aowDice: 1, aowSides: 12 },
+    { id: 31, name: "Exiled Knight’s Greatsword", diceNum: 2, diceSides: 6, ap: 1, stat1: "str", tier1: "A", tier2: null, aowName: "Impaling Thrust", aowDice: 1, aowSides: 12 },
     { id: 32, name: "Lordsworn’s Greatsword", diceNum: 2, diceSides: 6, ap: 1, stat1: "str", tier1: "C", stat2: "dex", tier2: "C", aowName: "Upward Slash", aowDice: 1, aowSides: 10 },
-    { id: 33, name: "Troll’s Golden Sword", diceNum: 2, diceSides: 8, ap: 2, stat1: "str", tier1: "A", tier2: null, aowName: "Troll’s Roar", aowDice: 2, aowSides: 8 },
+    { id: 33, name: "Troll’s Collosal Sword", diceNum: 2, diceSides: 8, ap: 2, stat1: "str", tier1: "A", tier2: null, aowName: "Troll’s Roar", aowDice: 2, aowSides: 8 },
     { id: 34, name: "Royal Greatsword", diceNum: 2, diceSides: 8, ap: 2, stat1: "str", tier1: "B", stat2: "int", tier2: "C", aowName: "Wolf’s Assault", aowDice: 2, aowSides: 10 },
     { id: 35, name: "Crescent Axe", diceNum: 1, diceSides: 12, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "C", aowName: "War Cry", aowDice: 2, aowSides: 6 },
     { id: 36, name: "Battle Axe", diceNum: 1, diceSides: 10, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Wild Strikes", aowDice: 1, aowSides: 8 },
@@ -61,123 +59,123 @@ const WEAPONS_DATABASE = [
     { id: 40, name: "Mace", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "A", tier2: null, aowName: "Endure Strike", aowDice: 1, aowSides: 8 },
     { id: 41, name: "Morning Star", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Heavy Spike", aowDice: 1, aowSides: 10 },
     { id: 42, name: "Flail", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Spinning Chain", aowDice: 1, aowSides: 8 },
-    { id: 43, name: "Cross-Naginata", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Repeating Thrust", aowDice: 1, aowSides: 6 },
+    { id: 43, name: "Naginata", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Repeating Thrust", aowDice: 1, aowSides: 6 },
     { id: 44, name: "Pike", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Charge", aowDice: 1, aowSides: 10 },
     { id: 45, name: "Partisan", diceNum: 1, diceSides: 10, ap: 1, stat1: "str", tier1: "C", stat2: "dex", tier2: "C", aowName: "Spectral Lance", aowDice: 1, aowSides: 8 },
-    { id: 46, name: "Nightrider Glaive", diceNum: 2, diceSides: 6, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Phantom Slash", aowDice: 2, aowSides: 8 },
+    { id: 46, name: "Riders Glaive", diceNum: 2, diceSides: 6, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Phantom Slash", aowDice: 2, aowSides: 8 },
     { id: 47, name: "Lucerne", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "C", aowName: "Giant Hunt", aowDice: 1, aowSides: 12 },
-    { id: 48, name: "Gargoyle’s Halberd", diceNum: 2, diceSides: 6, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Vacuum Slice", aowDice: 2, aowSides: 6 },
-    { id: 49, name: "Vulgar Militia Saw", diceNum: 1, diceSides: 12, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Serrated Slash", aowDice: 1, aowSides: 10 },
-    { id: 50, name: "Academy Glintstone Staff", isCatalyst: true, type: "sorcery" },
-    { id: 51, name: "Finger Seal", isCatalyst: true, type: "incantation" }
+    { id: 48, name: "Great Halberd", diceNum: 2, diceSides: 6, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Vacuum Slice", aowDice: 2, aowSides: 6 },
+    { id: 49, name: "Recusants Saw", diceNum: 1, diceSides: 12, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Serrated Slash", aowDice: 1, aowSides: 10 },
+    { id: 50, name: "Scorcerers Staff", isCatalyst: true, type: "sorcery" },
+    { id: 51, name: "Holy Seal", isCatalyst: true, type: "incantation" }
 ];
 
 const TALISMAN_DATABASE = [
-    { id: "stargazer-heirloom", kind: "talisman", rarity: "regular", name: "Stargazer Heirloom", stat: "int", amount: 5, description: "Raises Intelligence by 5." },
-    { id: "starscourge-heirloom", kind: "talisman", rarity: "regular", name: "Starscourge Heirloom", stat: "str", amount: 5, description: "Raises Strength by 5." },
-    { id: "two-fingers-heirloom", kind: "talisman", rarity: "regular", name: "Two Fingers Heirloom", stat: "fai", amount: 5, description: "Raises Faith by 5." },
-    { id: "prosthesis-wearer-heirloom", kind: "talisman", rarity: "regular", name: "Prosthesis-Wearer Heirloom", stat: "dex", amount: 5, description: "Raises Dexterity by 5." },
-    { id: "shard-of-alexander", kind: "talisman", rarity: "legendary", name: "Shard of Alexander", effect: "aowDamage", percentage: 15, description: "Ashes of War deal 15% more damage after their damage roll." },
-    { id: "great-jars-arsenal", kind: "talisman", rarity: "epic", name: "Great-Jar's Arsenal", effect: "colossalDamage", percentage: 15, description: "Colossal weapon damage is increased by 15% after Strength scaling." },
-    { id: "godskin-swaddling-cloth", kind: "talisman", rarity: "regular", name: "Godskin Swaddling Cloth", effect: "consecutiveAttackHeal", amount: 2, description: "Consecutive basic attacks after the first heal 2 HP. Other actions reset the sequence." },
-    { id: "blue-dancer-talisman", kind: "talisman", rarity: "regular", name: "Blue Dancer Talisman", effect: "singleWeaponDamage", percentage: 20, description: "Basic attacks and Ashes of War deal 20% more damage while the off-hand is empty and a non-Colossal weapon is equipped in the main hand." },
-    { id: "ritual-sword-talisman", kind: "talisman", rarity: "epic", name: "Ritual Sword Talisman", effect: "fullHealthDamage", percentage: 10, description: "All attacks deal 10% more damage while at full HP." },
-    { id: "winged-sword-insignia", kind: "talisman", rarity: "epic", name: "Winged Sword Insignia", effect: "successiveWeaponDamage", percentagePerHit: 5, maxPercentage: 15, description: "Successive weapon hits gain 5% damage each, up to 15%. Non-weapon actions, ending your turn, or taking damage reset the streak." },
-    { id: "rotten-winged-sword-insignia", kind: "talisman", rarity: "legendary", name: "Rotten Winged Sword Insignia", effect: "successiveWeaponDamage", percentagePerHit: 8, maxPercentage: 24, description: "Successive weapon hits gain 8% damage each, up to 24%. Non-weapon actions, ending your turn, or taking damage reset the streak." },
-    { id: "moon-of-nokstella", kind: "talisman", rarity: "legendary", name: "Moon of Nokstella", effect: "spellSlots", amount: 2, description: "Magic classes can carry two additional spells." },
+    { id: "stargazer-heirloom", kind: "talisman", rarity: "regular", name: "Night Sky's Heirloom", stat: "int", amount: 5, description: "Raises Intelligence by 5." },
+    { id: "starscourge-heirloom", kind: "talisman", rarity: "regular", name: "Mighty DemiGods Heirloom", stat: "str", amount: 5, description: "Raises Strength by 5." },
+    { id: "two-fingers-heirloom", kind: "talisman", rarity: "regular", name: "Holy Figure Heirloom", stat: "fai", amount: 5, description: "Raises Faith by 5." },
+    { id: "prosthesis-wearer-heirloom", kind: "talisman", rarity: "regular", name: "Tricksters Heirloom", stat: "dex", amount: 5, description: "Raises Dexterity by 5." },
+    { id: "shard-of-alexander", kind: "talisman", rarity: "legendary", name: "Shard of the Hero", effect: "aowDamage", percentage: 15, description: "Ashes of War deal 15% more damage after their damage roll." },
+    { id: "great-jars-arsenal", kind: "talisman", rarity: "epic", name: "Veterans's Arsenal", effect: "colossalDamage", percentage: 15, description: "Colossal weapon damage is increased by 15% after Strength scaling." },
+    { id: "godskin-swaddling-cloth", kind: "talisman", rarity: "regular", name: "Cloth of the Godkillers", effect: "consecutiveAttackHeal", amount: 2, description: "Consecutive basic attacks after the first heal 2 HP. Other actions reset the sequence." },
+    { id: "blue-dancer-talisman", kind: "talisman", rarity: "regular", name: "Nimble Fairy Talisman", effect: "singleWeaponDamage", percentage: 20, description: "Basic attacks and Ashes of War deal 20% more damage while the off-hand is empty and a non-Colossal weapon is equipped in the main hand." },
+    { id: "ritual-sword-talisman", kind: "talisman", rarity: "epic", name: "Rejuvenated Talisman", effect: "fullHealthDamage", percentage: 10, description: "All attacks deal 10% more damage while at full HP." },
+    { id: "winged-sword-insignia", kind: "talisman", rarity: "epic", name: "Swift Waters Insignia", effect: "successiveWeaponDamage", percentagePerHit: 5, maxPercentage: 15, description: "Successive weapon hits gain 5% damage each, up to 15%. Non-weapon actions, ending your turn, or taking damage reset the streak." },
+    { id: "rotten-winged-sword-insignia", kind: "talisman", rarity: "legendary", name: "Uncelterd Swift Waters Insignia", effect: "successiveWeaponDamage", percentagePerHit: 8, maxPercentage: 24, description: "Successive weapon hits gain 8% damage each, up to 24%. Non-weapon actions, ending your turn, or taking damage reset the streak." },
+    { id: "moon-of-nokstella", kind: "talisman", rarity: "legendary", name: "Moon of hidden City", effect: "spellSlots", amount: 2, description: "Magic classes can carry two additional spells." },
     { id: "pearlshield-talisman", kind: "talisman", rarity: "epic", name: "Pearlshield Talisman", effect: "blockDamageReduction", reduction: 0.75, description: "Raises two-handed block damage reduction from 50% to 75%." },
-    { id: "viridian-amber-medallion-1", kind: "talisman", rarity: "regular", name: "Viridian Amber Medallion +1", effect: "apBonus", amount: 1, description: "Raises maximum AP by 1." },
-    { id: "viridian-amber-medallion-2", kind: "talisman", rarity: "regular", name: "Viridian Amber Medallion +2", effect: "apBonus", amount: 2, description: "Raises maximum AP by 2." },
-    { id: "viridian-amber-medallion-3", kind: "talisman", rarity: "legendary", name: "Viridian Amber Medallion +3", effect: "apBonus", amount: 3, description: "Raises maximum AP by 3." }
+    { id: "viridian-amber-medallion-1", kind: "talisman", rarity: "regular", name: "Medallion of the Champion +1", effect: "apBonus", amount: 1, description: "Raises maximum AP by 1." },
+    { id: "viridian-amber-medallion-2", kind: "talisman", rarity: "regular", name: "Medallion of the Champion +2", effect: "apBonus", amount: 2, description: "Raises maximum AP by 2." },
+    { id: "viridian-amber-medallion-3", kind: "talisman", rarity: "legendary", name: "Medallion of the Champion +3", effect: "apBonus", amount: 3, description: "Raises maximum AP by 3." }
 ];
 
 // --- 30 SPELLS ---
 const SPELLS_DATABASE = [
-    { name: "Glintstone Pebble", type: "sorcery", reqStat: "int", minStat: 10, ap: 1, diceNum: 1, diceSides: 8, tier: "B" },
-    { name: "Swift Glintstone Shard", type: "sorcery", reqStat: "int", minStat: 12, ap: 1, diceNum: 1, diceSides: 6, tier: "A" },
-    { name: "Glintstone Cometshard", type: "sorcery", reqStat: "int", minStat: 18, ap: 2, diceNum: 2, diceSides: 8, tier: "A" },
+    { name: "Shard of the Sky", type: "sorcery", reqStat: "int", minStat: 10, ap: 1, diceNum: 1, diceSides: 8, tier: "B" },
+    { name: "Swift Shard of the Sky", type: "sorcery", reqStat: "int", minStat: 12, ap: 1, diceNum: 1, diceSides: 6, tier: "A" },
+    { name: "Cometshard of the Sky", type: "sorcery", reqStat: "int", minStat: 18, ap: 2, diceNum: 2, diceSides: 8, tier: "A" },
     { name: "Comet", type: "sorcery", reqStat: "int", minStat: 24, ap: 2, diceNum: 3, diceSides: 8, tier: "S" },
     { name: "Star Shower", type: "sorcery", reqStat: "int", minStat: 20, ap: 2, diceNum: 2, diceSides: 10, tier: "B" },
-    { name: "Rock Sling", type: "sorcery", reqStat: "int", minStat: 16, ap: 2, diceNum: 3, diceSides: 6, tier: "A" },
-    { name: "Carian Slicer", type: "sorcery", reqStat: "int", minStat: 14, ap: 1, diceNum: 2, diceSides: 6, tier: "S" },
-    { name: "Carian Greatsword", type: "sorcery", reqStat: "int", minStat: 22, ap: 2, diceNum: 2, diceSides: 10, tier: "A" },
-    { name: "Cannon of Haima", type: "sorcery", reqStat: "int", minStat: 25, ap: 3, diceNum: 4, diceSides: 8, tier: "S" },
-    { name: "Collapsing Stars", type: "sorcery", reqStat: "int", minStat: 28, ap: 2, diceNum: 3, diceSides: 8, tier: "A" },
-    { name: "Night Comet", type: "sorcery", reqStat: "int", minStat: 26, ap: 2, diceNum: 3, diceSides: 8, tier: "S" },
-    { name: "Magma Shot", type: "sorcery", reqStat: "int", minStat: 19, ap: 2, diceNum: 2, diceSides: 8, tier: "B" },
-    { name: "Ranni's Dark Moon", type: "sorcery", reqStat: "int", minStat: 35, ap: 3, diceNum: 5, diceSides: 8, tier: "S" },
-    { name: "Comet Azur", type: "sorcery", reqStat: "int", minStat: 40, ap: 4, diceNum: 6, diceSides: 10, tier: "S" },
-    { name: "Stars of Ruin", type: "sorcery", reqStat: "int", minStat: 32, ap: 3, diceNum: 4, diceSides: 8, tier: "A" },
-    { name: "Catch Flame", type: "incantation", reqStat: "fai", minStat: 10, ap: 1, diceNum: 1, diceSides: 8, tier: "A" },
-    { name: "Flame Sling", type: "incantation", reqStat: "fai", minStat: 12, ap: 1, diceNum: 1, diceSides: 10, tier: "B" },
-    { name: "Lightning Spear", type: "incantation", reqStat: "fai", minStat: 17, ap: 2, diceNum: 2, diceSides: 8, tier: "A" },
+    { name: "Rock Throw", type: "sorcery", reqStat: "int", minStat: 16, ap: 2, diceNum: 3, diceSides: 6, tier: "A" },
+    { name: "Sky Slicer", type: "sorcery", reqStat: "int", minStat: 14, ap: 1, diceNum: 2, diceSides: 6, tier: "S" },
+    { name: "Skys Greatsword", type: "sorcery", reqStat: "int", minStat: 22, ap: 2, diceNum: 2, diceSides: 10, tier: "A" },
+    { name: "Cannon of the Moon", type: "sorcery", reqStat: "int", minStat: 25, ap: 3, diceNum: 4, diceSides: 8, tier: "S" },
+    { name: "Imploding Stars", type: "sorcery", reqStat: "int", minStat: 28, ap: 2, diceNum: 3, diceSides: 8, tier: "A" },
+    { name: "Comet of the Dark Sky", type: "sorcery", reqStat: "int", minStat: 26, ap: 2, diceNum: 3, diceSides: 8, tier: "S" },
+    { name: "Sphere of Lava", type: "sorcery", reqStat: "int", minStat: 19, ap: 2, diceNum: 2, diceSides: 8, tier: "B" },
+    { name: "Ice Witch's Dark Moon", type: "sorcery", reqStat: "int", minStat: 35, ap: 3, diceNum: 5, diceSides: 8, tier: "S" },
+    { name: "Ray of the Moon", type: "sorcery", reqStat: "int", minStat: 40, ap: 4, diceNum: 6, diceSides: 10, tier: "S" },
+    { name: "Stars of Desolation", type: "sorcery", reqStat: "int", minStat: 32, ap: 3, diceNum: 4, diceSides: 8, tier: "A" },
+    { name: "Catch Fire", type: "incantation", reqStat: "fai", minStat: 10, ap: 1, diceNum: 1, diceSides: 8, tier: "A" },
+    { name: "Fire Ball", type: "incantation", reqStat: "fai", minStat: 12, ap: 1, diceNum: 1, diceSides: 10, tier: "B" },
+    { name: "Lightning Toss", type: "incantation", reqStat: "fai", minStat: 17, ap: 2, diceNum: 2, diceSides: 8, tier: "A" },
     { name: "Honed Lightning", type: "incantation", reqStat: "fai", minStat: 21, ap: 2, diceNum: 2, diceSides: 10, tier: "A" },
-    { name: "Black Flame", type: "incantation", reqStat: "fai", minStat: 20, ap: 2, diceNum: 3, diceSides: 6, tier: "S" },
-    { name: "Scouring Black Flame", type: "incantation", reqStat: "fai", minStat: 28, ap: 3, diceNum: 4, diceSides: 6, tier: "S" },
-    { name: "Giantsflame Take Thee", type: "incantation", reqStat: "fai", minStat: 30, ap: 3, diceNum: 4, diceSides: 8, tier: "S" },
-    { name: "Frenzied Burst", type: "incantation", reqStat: "fai", minStat: 22, ap: 2, diceNum: 3, diceSides: 8, tier: "A" },
-    { name: "Unendurable Frenzy", type: "incantation", reqStat: "fai", minStat: 31, ap: 3, diceNum: 5, diceSides: 6, tier: "S" },
-    { name: "Ancient Dragons' Lightning Spear", type: "incantation", reqStat: "fai", minStat: 32, ap: 3, diceNum: 4, diceSides: 10, tier: "S" },
-    { name: "Fortissax's Lightning Spear", type: "incantation", reqStat: "fai", minStat: 35, ap: 3, diceNum: 5, diceSides: 8, tier: "S" },
-    { name: "Rotten Breath", type: "incantation", reqStat: "fai", minStat: 15, ap: 2, diceNum: 2, diceSides: 8, tier: "S" },
-    { name: "Dragonice", type: "incantation", reqStat: "fai", minStat: 16, ap: 2, diceNum: 2, diceSides: 8, tier: "A" },
+    { name: "Godkillers Flame", type: "incantation", reqStat: "fai", minStat: 20, ap: 2, diceNum: 3, diceSides: 6, tier: "S" },
+    { name: "Scouring Godkillers Flame", type: "incantation", reqStat: "fai", minStat: 28, ap: 3, diceNum: 4, diceSides: 6, tier: "S" },
+    { name: "Collalflame Take Thee", type: "incantation", reqStat: "fai", minStat: 30, ap: 3, diceNum: 4, diceSides: 8, tier: "S" },
+    { name: "Burst of Allconsuming Fire", type: "incantation", reqStat: "fai", minStat: 22, ap: 2, diceNum: 3, diceSides: 8, tier: "A" },
+    { name: "Unendurable Allconsuming Fire", type: "incantation", reqStat: "fai", minStat: 31, ap: 3, diceNum: 5, diceSides: 6, tier: "S" },
+    { name: "Dragons' Lightning Toss", type: "incantation", reqStat: "fai", minStat: 32, ap: 3, diceNum: 4, diceSides: 10, tier: "S" },
+    { name: "Ballssax's Lightning Toss", type: "incantation", reqStat: "fai", minStat: 35, ap: 3, diceNum: 5, diceSides: 8, tier: "S" },
+    { name: "Putrid Dragon's Breath", type: "incantation", reqStat: "fai", minStat: 15, ap: 2, diceNum: 2, diceSides: 8, tier: "S" },
+    { name: "Dragons' Ice Breath", type: "incantation", reqStat: "fai", minStat: 16, ap: 2, diceNum: 2, diceSides: 8, tier: "A" },
     { name: "Burn, O Flame!", type: "incantation", reqStat: "fai", minStat: 27, ap: 3, diceNum: 3, diceSides: 12, tier: "A" },
-    { name: "Wrath of Gold", type: "incantation", reqStat: "fai", minStat: 32, ap: 2, diceNum: 3, diceSides: 10, tier: "A" }
+    { name: "Wrath of Faith", type: "incantation", reqStat: "fai", minStat: 32, ap: 2, diceNum: 3, diceSides: 10, tier: "A" }
 ];
 
 // --- 40 MONSTERS WITH BOSSES ---
 const MONSTER_TIERS = [
     [
-        { name: "Wandering Noble", hp: 12, dice: 1, sides: 4, bonus: 0, xp: 15 },
-        { name: "Godrick Soldier", hp: 18, dice: 1, sides: 6, bonus: 1, xp: 25 },
+        { name: "Frgotton Noble", hp: 12, dice: 1, sides: 4, bonus: 0, xp: 15 },
+        { name: "Grafted Soldier", hp: 18, dice: 1, sides: 6, bonus: 1, xp: 25 },
         { name: "Stray Dog", hp: 14, dice: 1, sides: 6, bonus: 2, xp: 20 },
-        { name: "Demi-Human Fiend", hp: 16, dice: 1, sides: 4, bonus: 2, xp: 22 },
-        { name: "Kaiden Sellsword", hp: 28, dice: 1, sides: 8, bonus: 2, xp: 45 },
-        { name: "Godrick Knight", hp: 34, dice: 1, sides: 10, bonus: 2, xp: 60 },
-        { name: "Giant Land Octopus", hp: 42, dice: 1, sides: 8, bonus: 1, xp: 70 },
-        { name: "Pumpkin Head", hp: 48, dice: 2, sides: 6, bonus: 2, xp: 85 },
-        { name: "Bloodhound Knight", hp: 38, dice: 2, sides: 4, bonus: 4, xp: 95 }
+        { name: "Sub-Human Fiend", hp: 16, dice: 1, sides: 4, bonus: 2, xp: 22 },
+        { name: "Sellsword", hp: 28, dice: 1, sides: 8, bonus: 2, xp: 45 },
+        { name: "Grafted Knight", hp: 34, dice: 1, sides: 10, bonus: 2, xp: 60 },
+        { name: "Giant Land Monstrocity", hp: 42, dice: 1, sides: 8, bonus: 1, xp: 70 },
+        { name: "Headless Orc", hp: 48, dice: 2, sides: 6, bonus: 2, xp: 85 },
+        { name: "Oathbreaker Knight", hp: 38, dice: 2, sides: 4, bonus: 4, xp: 95 }
     ],
     [
-        { name: "Raya Lucaria Soldier", hp: 32, dice: 1, sides: 8, bonus: 2, xp: 55 },
-        { name: "Cuckoo Knight", hp: 55, dice: 1, sides: 10, bonus: 3, xp: 100 },
-        { name: "Glintstone Dragonborn", hp: 48, dice: 2, sides: 6, bonus: 2, xp: 90 },
-        { name: "Rotten Stray", hp: 30, dice: 2, sides: 4, bonus: 4, xp: 80 },
-        { name: "Cleanrot Knight", hp: 65, dice: 2, sides: 6, bonus: 3, xp: 140 },
-        { name: "Omen Brawler", hp: 75, dice: 2, sides: 8, bonus: 3, xp: 160 },
-        { name: "Kindred of Rot", hp: 42, dice: 1, sides: 10, bonus: 4, xp: 110 },
-        { name: "Vulgar Militia Warrior", hp: 36, dice: 1, sides: 12, bonus: 2, xp: 85 },
-        { name: "Redmane Knight", hp: 80, dice: 2, sides: 8, bonus: 4, xp: 190 }
+        { name: "Ice Witchs Soldier", hp: 32, dice: 1, sides: 8, bonus: 2, xp: 55 },
+        { name: "Starstruck Knight", hp: 55, dice: 1, sides: 10, bonus: 3, xp: 100 },
+        { name: "Maddend Knight", hp: 48, dice: 2, sides: 6, bonus: 2, xp: 90 },
+        { name: "Pudrid Stray", hp: 30, dice: 2, sides: 4, bonus: 4, xp: 80 },
+        { name: "Cleansed Knight", hp: 65, dice: 2, sides: 6, bonus: 3, xp: 140 },
+        { name: "Horned Brawler", hp: 75, dice: 2, sides: 8, bonus: 3, xp: 160 },
+        { name: "Follower of Desiease", hp: 42, dice: 1, sides: 10, bonus: 4, xp: 110 },
+        { name: "Recusant Warrior", hp: 36, dice: 1, sides: 12, bonus: 2, xp: 85 },
+        { name: "Firey Knight", hp: 80, dice: 2, sides: 8, bonus: 4, xp: 190 }
     ],
     [
-        { name: "Leyndell Soldier", hp: 58, dice: 1, sides: 10, bonus: 3, xp: 130 },
-        { name: "Leyndell Knight", hp: 100, dice: 2, sides: 8, bonus: 4, xp: 240 },
+        { name: "Capital Soldier", hp: 58, dice: 1, sides: 10, bonus: 3, xp: 130 },
+        { name: "Capital Knight", hp: 100, dice: 2, sides: 8, bonus: 4, xp: 240 },
         { name: "Wormface", hp: 85, dice: 2, sides: 6, bonus: 5, xp: 210 },
-        { name: "Black Knife Assassin", hp: 70, dice: 3, sides: 4, bonus: 6, xp: 280 },
-        { name: "Gargoyle Warrior", hp: 130, dice: 2, sides: 10, bonus: 4, xp: 320 },
-        { name: "Crucible Knight", hp: 150, dice: 2, sides: 8, bonus: 6, xp: 380 },
-        { name: "Sanguine Noble", hp: 90, dice: 2, sides: 6, bonus: 6, xp: 260 },
-        { name: "Abductor Virgin", hp: 140, dice: 3, sides: 6, bonus: 3, xp: 330 },
-        { name: "Draconic Tree Sentinel", hp: 180, dice: 2, sides: 10, bonus: 6, xp: 450 }
+        { name: "Assassin", hp: 70, dice: 3, sides: 4, bonus: 6, xp: 280 },
+        { name: "Stone Warrior", hp: 130, dice: 2, sides: 10, bonus: 4, xp: 320 },
+        { name: "Heavy Knight", hp: 150, dice: 2, sides: 8, bonus: 6, xp: 380 },
+        { name: "Bloodthirsty Noble", hp: 90, dice: 2, sides: 6, bonus: 6, xp: 260 },
+        { name: "Iron Maiden", hp: 140, dice: 3, sides: 6, bonus: 3, xp: 330 },
+        { name: "Dargonborn Sentinel", hp: 180, dice: 2, sides: 10, bonus: 6, xp: 450 }
     ],
     [
         { name: "Fire Monk", hp: 110, dice: 2, sides: 8, bonus: 4, xp: 300 },
-        { name: "Prelate of Flame", hp: 210, dice: 3, sides: 8, bonus: 5, xp: 520 },
-        { name: "Banished Knight (Farum)", hp: 160, dice: 2, sides: 10, bonus: 5, xp: 480 },
-        { name: "Beastman of Farum Azula", hp: 125, dice: 3, sides: 6, bonus: 4, xp: 400 },
+        { name: "Harbinger of Flame", hp: 210, dice: 3, sides: 8, bonus: 5, xp: 520 },
+        { name: "Banished Knight (Crumbling Lands)", hp: 160, dice: 2, sides: 10, bonus: 5, xp: 480 },
+        { name: "Beastman of Crumbling Lands", hp: 125, dice: 3, sides: 6, bonus: 4, xp: 400 },
         { name: "Skeletal Swordsman", hp: 95, dice: 2, sides: 6, bonus: 5, xp: 320 },
-        { name: "Night's Cavalry", hp: 175, dice: 2, sides: 10, bonus: 6, xp: 550 },
-        { name: "Godskin Apostle", hp: 190, dice: 3, sides: 6, bonus: 7, xp: 650 },
-        { name: "Godskin Noble", hp: 220, dice: 2, sides: 12, bonus: 6, xp: 700 },
-        { name: "Tree Sentinel Commander", hp: 260, dice: 3, sides: 8, bonus: 8, xp: 900 }
+        { name: "Night's Rider", hp: 175, dice: 2, sides: 10, bonus: 6, xp: 550 },
+        { name: "Godkiller Apostle", hp: 190, dice: 3, sides: 6, bonus: 7, xp: 650 },
+        { name: "Godkiller Noble", hp: 220, dice: 2, sides: 12, bonus: 6, xp: 700 },
+        { name: "Sentinel Commander", hp: 260, dice: 3, sides: 8, bonus: 8, xp: 900 }
     ]
 ];
 
 const BOSSES = [
-    { name: "Margit, the Fell Omen", hp: 110, dice: 2, sides: 8, bonus: 4, xp: 350 },
-    { name: "Godrick the Grafted", hp: 240, dice: 3, sides: 6, bonus: 5, xp: 800 },
-    { name: "Starscourge Radahn", hp: 420, dice: 3, sides: 8, bonus: 6, xp: 1800 },
-    { name: "Malenia, Blade of Miquella", hp: 650, dice: 4, sides: 8, bonus: 8, xp: 4000 }
+    { name: "Git the Good", hp: 110, dice: 2, sides: 8, bonus: 4, xp: 350 },
+    { name: "Grafted Lord", hp: 240, dice: 3, sides: 6, bonus: 5, xp: 800 },
+    { name: "The Mighyest Demigod", hp: 420, dice: 3, sides: 8, bonus: 6, xp: 1800 },
+    { name: "The Swordswoman of the Putrid God", hp: 650, dice: 4, sides: 8, bonus: 8, xp: 4000 }
 ];
 
 let gameState = {
@@ -189,6 +187,8 @@ let gameState = {
 };
 
 let tutorialState = null;
+let enemyTurnPending = false;
+let enemyTurnTimer = null;
 
 // --- FORMULAS ---
 function calculateMaxHp(vig) { return vig * 5; }
@@ -462,8 +462,32 @@ function migratePlayerState() {
 }
 
 function resetGame() {
+    clearTimeout(enemyTurnTimer);
+    enemyTurnPending = false;
     localStorage.removeItem("er_dungeon_save_v2");
     location.reload();
+}
+
+function showDeathScreen() {
+    const overlay = document.getElementById("death-overlay");
+    if (!overlay) {
+        setTimeout(resetGame, 3000);
+        return;
+    }
+
+    overlay.setAttribute("aria-hidden", "false");
+    requestAnimationFrame(() => overlay.classList.add("death-overlay--visible"));
+
+    setTimeout(() => {
+        const resetAfterFade = event => {
+            if (event.target !== overlay || event.propertyName !== "opacity") return;
+            overlay.removeEventListener("transitionend", resetAfterFade);
+            resetGame();
+        };
+        overlay.addEventListener("transitionend", resetAfterFade);
+        overlay.classList.remove("death-overlay--visible");
+        overlay.setAttribute("aria-hidden", "true");
+    }, 850);
 }
 
 // --- GAME LOGIC ---
@@ -510,7 +534,7 @@ function spawnEnemy() {
     if (gameState.killCount > 0 && gameState.killCount % 10 === 0) {
         const bossIdx = Math.min(Math.floor((gameState.killCount / 10) - 1), BOSSES.length - 1);
         template = BOSSES[bossIdx];
-        const scaledHp = calculateScaledHp(template.hp, playerLevel);
+        const scaledHp = calculateScaledHp(template.hp, playerLevel) + 10;
 
         gameState.enemy = { name: template.name, maxHp: scaledHp, currentHp: scaledHp, dice: template.dice, sides: template.sides, bonus: template.bonus, xp: template.xp, isBoss: true };
         log(`🚨 <strong class="boss-text">BOSS ENCOUNTER: ${gameState.enemy.name}</strong> (${gameState.enemy.currentHp} HP)!`);
@@ -529,7 +553,7 @@ function spawnEnemy() {
 
     const tierList = MONSTER_TIERS[tierIdx];
     template = tierList[Math.floor(Math.random() * tierList.length)];
-    const scaledHp = calculateScaledHp(template.hp, playerLevel);
+    const scaledHp = calculateScaledHp(template.hp, playerLevel) + 10;
 
     gameState.enemy = { name: template.name, maxHp: scaledHp, currentHp: scaledHp, dice: template.dice, sides: template.sides, bonus: template.bonus, xp: template.xp + (playerLevel * 2), isBoss: false };
     log(`Encountered <strong class="damage-text">${gameState.enemy.name}</strong> (${gameState.enemy.currentHp} HP)!`);
@@ -681,7 +705,8 @@ function enemyTurn() {
     const p = gameState.player;
     if (!e || e.currentHp <= 0) return;
 
-    const rolledDamage = rollDice(e.dice, e.sides) + e.bonus;
+    const earlyGameBonus = !e.isBoss && p.level < 11 ? Math.floor(Math.random() * 4) + 3 : 0;
+    const rolledDamage = rollDice(e.dice, e.sides) + e.bonus + earlyGameBonus;
     const blockReduction = p.isBlocking
         ? hasTalisman(p, "pearlshield-talisman") ? 0.75 : 0.5
         : 0;
@@ -689,13 +714,35 @@ function enemyTurn() {
     p.isBlocking = false;
     p.currentHp = Math.max(0, p.currentHp - damage);
     p.weaponAttackStreak = 0;
+    flashBloodScreen();
 
-    log(`The <strong>${e.name}</strong> strikes for <span class="damage-text">${damage} damage</span>${damage < rolledDamage ? ` (blocked from ${rolledDamage})` : ''}!`);
+    log(`The <strong>${e.name}</strong> strikes for <span class="damage-text">${damage} damage</span>!`);
 
     if (p.currentHp <= 0) {
         log(`☠️ <strong class="damage-text">YOU DIED</strong>`, "system-msg");
-        setTimeout(() => resetGame(), 3000);
+        showDeathScreen();
     }
+}
+
+function scheduleEnemyTurn() {
+    if (enemyTurnPending) return;
+
+    enemyTurnPending = true;
+    enemyTurnTimer = setTimeout(() => {
+        enemyTurnTimer = null;
+        enemyTurn();
+        const player = gameState.player;
+        if (player && player.currentHp > 0) player.currentAp = player.maxAp;
+        enemyTurnPending = false;
+        saveGame();
+        renderUI();
+    }, 500);
+}
+
+function flashBloodScreen() {
+    document.body.classList.remove("enemy-hit");
+    void document.body.offsetWidth;
+    document.body.classList.add("enemy-hit");
 }
 
 function checkEnemyDefeated() {
@@ -741,12 +788,11 @@ function executeSingleAttack(slot) {
     p.currentAp -= weapon.ap;
     e.currentHp = Math.max(0, e.currentHp - damageResult.damage);
 
-    log(`Struck with <strong>${weapon.name}</strong> dealing <span class="damage-text">${damageResult.damage} damage</span>${damageResult.bonusDamage ? ` (${rolledDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}!`);
+    log(`Struck with <strong>${weapon.name}</strong> dealing <span class="damage-text">${damageResult.damage} damage</span>${damageResult.bonusDamage ? ` (${rolledDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}!`, "combat-msg combat-hit");
     if (healed) log(`Godskin Swaddling Cloth restores ${healed} HP.`, "system-msg");
 
     if (!checkEnemyDefeated() && p.currentAp === 0) {
-        enemyTurn();
-        p.currentAp = p.maxAp;
+        scheduleEnemyTurn();
     }
 
     saveGame();
@@ -781,11 +827,10 @@ function executeDualAttack() {
     p.currentAp -= dualAp;
     e.currentHp = Math.max(0, e.currentHp - totalDmg);
 
-    log(`<strong>Dual Strike</strong> (${p.mainHand.name} + ${p.offHand.name}; off-hand scaled by DEX ${stats.dex}/100) dealt <span class="damage-text">${totalDmg} damage</span>!`);
+    log(`<strong>Dual Strike</strong> (${p.mainHand.name} + ${p.offHand.name}; off-hand scaled by DEX ${stats.dex}/100) dealt <span class="damage-text">${totalDmg} damage</span>!`, "combat-msg combat-hit");
 
     if (!checkEnemyDefeated() && p.currentAp === 0) {
-        enemyTurn();
-        p.currentAp = p.maxAp;
+        scheduleEnemyTurn();
     }
 
     saveGame();
@@ -820,11 +865,10 @@ function executeAshOfWar(slot) {
     p.currentAp -= profile.apCost;
     e.currentHp = Math.max(0, e.currentHp - damageResult.damage);
 
-    log(`<strong>Ash of War: ${weapon.aowName}</strong> (${profile.diceNum}d${profile.diceSides}+${profile.bonus}, max ${profile.maxDamage}; ${profile.apCost} AP${repeatPenalty ? `; fatigue -${repeatPenalty}%` : ''}) dealt <span class="damage-text">${damageResult.damage} damage</span>${damageResult.bonusDamage ? ` (${fatiguedDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}!`);
+    log(`<strong>Ash of War: ${weapon.aowName}</strong> (${profile.diceNum}d${profile.diceSides}+${profile.bonus}, max ${profile.maxDamage}; ${profile.apCost} AP${repeatPenalty ? `; fatigue -${repeatPenalty}%` : ''}) dealt <span class="damage-text">${damageResult.damage} damage</span>${damageResult.bonusDamage ? ` (${fatiguedDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}!`, "combat-msg combat-hit combat-hit--special");
 
     if (!checkEnemyDefeated() && p.currentAp === 0) {
-        enemyTurn();
-        p.currentAp = p.maxAp;
+        scheduleEnemyTurn();
     }
 
     saveGame();
@@ -852,8 +896,7 @@ function executeBlock() {
     p.weaponAttackStreak = 0;
     const damageReduction = hasTalisman(p, "pearlshield-talisman") ? 75 : 50;
     log(`You brace with both hands. The next enemy hit is reduced by ${damageReduction}%.`, "system-msg");
-    enemyTurn();
-    if (p.currentHp > 0) p.currentAp = p.maxAp;
+    scheduleEnemyTurn();
     saveGame();
     renderUI();
 }
@@ -883,11 +926,10 @@ function castSpell(spellIdx) {
     p.weaponAttackStreak = 0;
     e.currentHp = Math.max(0, e.currentHp - damageResult.damage);
 
-    log(`Casted <strong class="magic-msg">${spell.name}</strong> dealing <span class="damage-text">${damageResult.damage} magic damage</span>${damageResult.bonusDamage ? ` (${rolledDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}!`);
+    log(`Casted <strong class="magic-msg">${spell.name}</strong> dealing <span class="damage-text">${damageResult.damage} magic damage</span>${damageResult.bonusDamage ? ` (${rolledDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}!`, "combat-msg combat-hit combat-hit--magic");
 
     if (!checkEnemyDefeated() && p.currentAp === 0) {
-        enemyTurn();
-        p.currentAp = p.maxAp;
+        scheduleEnemyTurn();
     }
 
     saveGame();
@@ -900,8 +942,7 @@ function passTurn() {
     gameState.player.aowStreak = 0;
     gameState.player.basicAttackStreak = 0;
     gameState.player.weaponAttackStreak = 0;
-    enemyTurn();
-    gameState.player.currentAp = gameState.player.maxAp;
+    scheduleEnemyTurn();
     saveGame();
     renderUI();
 }
@@ -1261,7 +1302,7 @@ function renderUI() {
         <div class="stat-item">Target: <span class="${e && e.isBoss ? 'boss-text' : 'damage-text'}">${e ? e.name : 'None'} (${e ? e.currentHp : 0}/${e ? e.maxHp : 0} HP)</span></div>
     `;
 
-    const isFrozen = gameState.droppedItem !== null;
+    const isFrozen = gameState.droppedItem !== null || enemyTurnPending;
 
     if (p.currentHp > 0) {
         if (p.mainHand && !p.mainHand.isCatalyst && !isColossalWeapon(p.mainHand)) {
