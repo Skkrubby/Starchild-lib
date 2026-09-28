@@ -1,47 +1,134 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="theme-color" content="#153a3a">
-	<title>Rooftop Rumble | Local PvP</title>
-	<link rel="stylesheet" href="game3.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Directional Grid Combat</title>
+  <link rel="stylesheet" href="game3.css" />
 </head>
 <body>
-	<main class="game-shell" aria-label="Rooftop Rumble local two-player arena fighter">
-		<canvas id="arena" aria-label="Two-player rooftop fighting arena"></canvas>
-		<div class="screen-grain" aria-hidden="true"></div>
+  <div class="game-shell">
+    <header class="topbar">
+      <div>
+        <h1>Directional Grid Combat</h1>
+      </div>
+      <button id="pause-btn" class="pause-btn" style="display:none;" onclick="togglePause()">Pause (P)</button>
+    </header>
 
-		<header class="hud">
-			<section class="fighter-hud fighter-hud-one" aria-label="Player one health">
-				<div class="fighter-label"><span class="player-mark">01</span><span class="fighter-name">MICA</span><span class="round-wins" id="winsOne">0 W</span></div>
-				<div class="health-track"><div class="health-fill health-one" id="healthOne"></div></div>
-			</section>
-			<div class="match-center"><div class="match-label">ROOFTOP LEAGUE</div><div class="round-count" id="roundCount">FIRST TO 3</div></div>
-			<section class="fighter-hud fighter-hud-two" aria-label="Player two health">
-				<div class="fighter-label"><span class="round-wins" id="winsTwo">0 W</span><span class="fighter-name">BRICK</span><span class="player-mark">02</span></div>
-				<div class="health-track"><div class="health-fill health-two" id="healthTwo"></div></div>
-			</section>
-		</header>
+    <div id="class-select-screen" class="class-select">
+      <h2>Choose Your Class</h2>
+      <div id="class-options-container" class="class-options"></div>
+      <button id="start-game-btn" class="start-button" disabled>Start Battle</button>
+    </div>
 
-		<div class="round-callout" id="roundCallout" aria-live="polite"></div>
+    <div id="game-screen" style="display: none;">
+      <section class="hud">
+        <div class="bar-wrap">
+          <label>Health</label>
+          <div class="bar">
+            <div id="hp-bar" class="fill hp"></div>
+          </div>
+          <span id="hp-text">0 / 0</span>
+        </div>
 
-		<section class="start-screen" id="startScreen" aria-label="Game start and controls">
-			<div class="start-panel">
-				<div class="eyebrow">LOCAL MULTIPLAYER / TWO PLAYERS</div>
-				<h1 id="screenTitle">Rooftop<br><em>Rumble</em></h1>
-				<p id="screenCopy">One roof. Two rivals. First to three rounds takes the skyline.</p>
-				<div class="control-columns">
-					<div class="control-set"><span class="control-title"><i class="swatch swatch-one"></i> MICA / PLAYER 1</span><span><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> Move</span><span><kbd>F</kbd> Sword</span></div>
-					<div class="control-set"><span class="control-title"><i class="swatch swatch-two"></i> BRICK / PLAYER 2</span><span><kbd>↑</kbd> <kbd>←</kbd> <kbd>↓</kbd> <kbd>→</kbd> Move</span><span><kbd>ENTER</kbd> Sword</span></div>
-				</div>
-				<button class="start-button" id="startButton" type="button"><span>Start the bout</span><b aria-hidden="true">↗</b></button>
-				<div class="match-note"><kbd>R</kbd> Restart round</div>
-			</div>
-		</section>
+        <div class="bar-wrap">
+          <label>Stamina</label>
+          <div class="bar">
+            <div id="sp-bar" class="fill stamina"></div>
+          </div>
+          <span id="sp-text">0 / 0</span>
+        </div>
 
-		<footer class="footer-hud"><span>NO GADGETS. NO REFEREE.</span><span><b>R</b> RESET ROUND</span></footer>
-	</main>
-	<script src="game3.js"></script>
+        <div class="bar-wrap">
+          <label>Focus</label>
+          <div class="bar">
+            <div id="fp-bar" class="fill fp"></div>
+          </div>
+          <span id="fp-text">0 / 0</span>
+        </div>
+      </section>
+
+      <main class="arena-layout">
+        <!-- LEFT PANEL: EQUIPMENT & DROPS -->
+        <aside class="side-panel left-panel">
+          <div class="panel-block">
+            <h2>Equipment</h2>
+            <div style="font-size: 0.85rem; line-height: 1.8; color: #9bb0c9;">
+              <div><span style="color: var(--accent);">Main Hand:</span> <span id="main-hand-slot">None</span></div>
+              <div><span style="color: var(--accent);">Off-Hand:</span> <span id="off-hand-slot">None</span></div>
+              <div>Stance: <span id="stance-slot">One-handed</span></div>
+              <div style="margin-top: 8px; color: var(--accent);">Talismans</div>
+              <div style="margin-left: 8px;"><span id="talisman-slot-1">Slot 1: Empty</span></div>
+              <div style="margin-left: 8px;"><span id="talisman-slot-2">Slot 2: Empty</span></div>
+              <div style="margin-top: 8px; color: var(--accent);">Spells</div>
+              <div id="spell-list" class="spell-list"><span style="color:#666;">No catalyst equipped</span></div>
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <h2>Backpack <span id="backpack-count" style="font-size:0.85rem; color:#9bb0c9;">0/10</span></h2>
+            <div id="backpack-container" class="backpack"></div>
+          </div>
+
+          <div class="panel-block">
+            <h2>Dropped Loot</h2>
+            <div id="drop-container" class="drop-box"><p class="empty-msg">No item dropped. Defeat monsters to find gear.</p></div>
+          </div>
+        </aside>
+
+        <!-- CENTER: COMBAT ARENA -->
+        <div class="battle-panel">
+          <canvas id="gameCanvas" width="520" height="520"></canvas>
+        </div>
+
+        <!-- RIGHT PANEL: STATUS & LOG -->
+        <aside class="side-panel right-panel">
+          <div id="choice-panel" class="panel-block hidden choice-box">
+            <h2>Choose Your Next Fight</h2>
+            <div id="choice-buttons"></div>
+          </div>
+
+          <div class="panel-block">
+            <h2>Combat</h2>
+            <div class="keybinds">
+              <button data-key="ArrowUp">↑ Look Up</button>
+              <button data-key="ArrowDown">↓ Look Down</button>
+              <button data-key="ArrowLeft">← Look Left</button>
+              <button data-key="ArrowRight">→ Look Right</button>
+              <button data-key="j">J - Light Attack</button>
+                            <button data-key="h">H - Flask</button>
+              <button data-key=" ">Space - Roll</button>
+              <button data-key="q">Q - Step Forward</button>
+              <button data-key="k">K - Ash of War</button>
+              <button data-key="t">T - Two-Hand</button>
+              <button data-key="b">B - Block (hold)</button>
+              <button data-key="p">P - Pause</button>
+            </div>
+          </div>
+
+          <div id="level-up-panel" class="panel-block hidden">
+            <h2 class="level-title">Level Up!</h2>
+            <div id="stat-buttons" class="stat-buttons"></div>
+          </div>
+
+          <div class="panel-block">
+            <h2>Status</h2>
+            <div id="player-class-title" style="font-size: 1.1rem; color: #f0a500; margin-bottom: 8px;">-</div>
+            <div id="player-stats" class="info-text"></div>
+            <div style="border-top:1px solid #2b3747; margin:10px 0 8px;"></div>
+            <div style="color: var(--accent); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.06em;">Target</div>
+            <div id="status-info" class="info-text"></div>
+          </div>
+
+          <div class="panel-block">
+            <h2>Log</h2>
+            <div id="log-box" class="log-box"></div>
+          </div>
+        </aside>
+      </main>
+    </div>
+  </div>
+
+  <script src="game3.js"></script>
 </body>
 </html>
