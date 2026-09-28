@@ -302,6 +302,7 @@ body.enemy-hit::after {
 
 .stat-item { font-size: 0.85rem; }
 .stat-value { color: var(--accent-blue); font-weight: bold; }
+.status-value { color: #77c9d4; font-weight: bold; }
 .stat-hp { color: var(--accent-red); }
 
 /* Level Up Box */
@@ -346,6 +347,7 @@ body.enemy-hit::after {
 }
 
 .system-msg { color: #888899; }
+.status-msg { color: #77c9d4; }
 .combat-msg { color: #e6e6e6; }
 .highlight { color: var(--accent-yellow); }
 .magic-msg { color: var(--accent-purple); }
@@ -475,6 +477,14 @@ body.enemy-hit::after {
 }
 
 .btn-magic { border-color: #6b21a8; color: var(--accent-purple); }
+.healing-text { color: #68d391; font-weight: bold; }
+.healing-potion-btn {
+    flex: 1 0 100%;
+    border-color: #28734b;
+    color: #8ee0aa;
+    font-size: 0.95rem;
+}
+.healing-potion-btn span { margin-right: 6px; }
 .btn-success { border-color: #1e5e3a; color: var(--accent-blue); }
 .btn-danger { margin-left: auto; border-color: #5a2228; color: var(--accent-red); }
 

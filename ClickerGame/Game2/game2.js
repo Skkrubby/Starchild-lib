@@ -97,7 +97,7 @@ const SPELLS_DATABASE = [
     { name: "Comet", type: "sorcery", reqStat: "int", minStat: 24, ap: 2, diceNum: 3, diceSides: 8, tier: "S" },
     { name: "Star Shower", type: "sorcery", reqStat: "int", minStat: 20, ap: 2, diceNum: 2, diceSides: 10, tier: "B" },
     { name: "Rock Throw", type: "sorcery", reqStat: "int", minStat: 16, ap: 2, diceNum: 3, diceSides: 6, tier: "A" },
-    { name: "Sky Slicer", type: "sorcery", reqStat: "int", minStat: 14, ap: 1, diceNum: 2, diceSides: 6, tier: "S" },
+    { name: "Sky Slicer", type: "sorcery", reqStat: "int", minStat: 14, ap: 1, diceNum: 2, diceSides: 6, tier: "B" },
     { name: "Skys Greatsword", type: "sorcery", reqStat: "int", minStat: 22, ap: 2, diceNum: 2, diceSides: 10, tier: "A" },
     { name: "Cannon of the Moon", type: "sorcery", reqStat: "int", minStat: 25, ap: 3, diceNum: 4, diceSides: 8, tier: "S" },
     { name: "Imploding Stars", type: "sorcery", reqStat: "int", minStat: 28, ap: 2, diceNum: 3, diceSides: 8, tier: "A" },
@@ -355,7 +355,102 @@ function getAshOfWarProfile(weapon, stats) {
 
 function calculateSpellBonus(spell, stats) {
     const val = stats[spell.reqStat] || 0;
-    return Math.floor(val * SCALING_TIERS[spell.tier]);
+    const scaling = SCALING_TIERS[spell.tier];
+    const baseBonus = val * scaling;
+    if (spell.ap !== 2) return Math.floor(baseBonus);
+    return Math.floor(baseBonus * 0.75 + Math.max(0, val - spell.minStat) * scaling);
+}
+
+function getSpellAttackProfile(spell, stats) {
+    return {
+        diceNum: spell.ap === 2 ? Math.ceil(spell.diceNum * 1.5) : spell.diceNum,
+        diceSides: spell.diceSides,
+        bonus: calculateSpellBonus(spell, stats)
+    };
+}
+
+function createEnemyStatusEffects() {
+    return {
+        frostbite: 0,
+        infection: { turns: 0, damage: 8 },
+        burn: { turns: 0, damage: 3 }
+    };
+}
+
+function normalizeEnemyStatusEffects(enemy) {
+    const defaults = createEnemyStatusEffects();
+    const saved = enemy.statusEffects || {};
+    enemy.statusEffects = {
+        frostbite: Number.isInteger(saved.frostbite) ? Math.max(0, saved.frostbite) : 0,
+        infection: { ...defaults.infection, ...saved.infection },
+        burn: { ...defaults.burn, ...saved.burn }
+    };
+    return enemy.statusEffects;
+}
+
+function getSpellStatusType(spell) {
+    const name = spell.name.toLowerCase();
+    if (name.includes("ice")) return "frostbite";
+    if (/putrid|poison/.test(name)) return "infection";
+    if (/fire|flame|lava/.test(name)) return "burn";
+    return null;
+}
+
+function tryApplySpellStatus(enemy, spell) {
+    const effect = getSpellStatusType(spell);
+    if (!effect || Math.random() >= (effect === "burn" ? 0.10 : 0.30)) return null;
+
+    const statuses = normalizeEnemyStatusEffects(enemy);
+    if (effect === "frostbite") {
+        statuses.frostbite = Math.max(statuses.frostbite, 2);
+        log("Frostbite! The enemy takes 20% more damage and deals 20% less damage for 2 turns.", "status-msg");
+    } else {
+        const turns = effect === "infection" ? 3 : spell.ap === 1 ? 10 : 20;
+        statuses[effect].turns = Math.max(statuses[effect].turns, turns);
+        log(`${effect === "infection" ? "Infection" : "Burn"} applied: ${statuses[effect].damage} damage per tick for ${statuses[effect].turns} ticks.`, "status-msg");
+    }
+    return effect;
+}
+
+function consumeFrostbiteForFireAttack(enemy, attackName) {
+    if (!/fire|flame|lava/i.test(attackName)) return false;
+    const statuses = normalizeEnemyStatusEffects(enemy);
+    if (statuses.frostbite <= 0) return false;
+    statuses.frostbite = 0;
+    log("Frostbite shattered! This Fire hit deals double damage.", "status-msg");
+    return true;
+}
+
+function applyEnemyDamage(damage) {
+    const enemy = gameState.enemy;
+    const statuses = enemy ? normalizeEnemyStatusEffects(enemy) : null;
+    return statuses && statuses.frostbite > 0 ? Math.ceil(damage * 1.2) : damage;
+}
+
+function getEnemyStatusSummary(enemy) {
+    if (!enemy) return "None";
+    const statuses = normalizeEnemyStatusEffects(enemy);
+    const active = [];
+    if (statuses.frostbite > 0) active.push(`Frostbite ${statuses.frostbite}`);
+    if (statuses.infection.turns > 0) active.push(`Infection ${statuses.infection.turns} ticks`);
+    if (statuses.burn.turns > 0) active.push(`Burn ${statuses.burn.turns} ticks`);
+    return active.join(" · ") || "None";
+}
+
+function tickEnemyDamageStatuses(enemy, trigger) {
+    if (!enemy || enemy.currentHp <= 0) return;
+    const statuses = normalizeEnemyStatusEffects(enemy);
+    for (const effect of ["infection", "burn"]) {
+        const status = statuses[effect];
+        if (status.turns <= 0) continue;
+        enemy.currentHp = Math.max(0, enemy.currentHp - status.damage);
+        status.turns -= 1;
+        log(`${effect === "infection" ? "Infection" : "Burn"} deals ${status.damage} damage after ${trigger} (${status.turns} ticks remain).`, "status-msg");
+    }
+}
+
+function getMaxHealingPotions(level) {
+    return Math.max(1, Math.floor(level / 3));
 }
 
 function rollDice(count, sides) {
@@ -404,6 +499,7 @@ function migratePlayerState() {
     gameState.pendingStatPoints = Math.max(savedPendingStatPoints, gameState.pendingStatPoint ? 1 : 0);
     delete gameState.pendingStatPoint;
 
+    if (gameState.enemy) normalizeEnemyStatusEffects(gameState.enemy);
     const p = gameState.player;
     if (!p) return;
 
@@ -418,6 +514,9 @@ function migratePlayerState() {
     if (p.talismans[0] && p.talismans[0] === p.talismans[1]) p.talismans[1] = null;
     p.basicAttackStreak = Number.isInteger(p.basicAttackStreak) ? Math.max(0, p.basicAttackStreak) : 0;
     p.weaponAttackStreak = Number.isInteger(p.weaponAttackStreak) ? Math.max(0, p.weaponAttackStreak) : 0;
+    p.healingPotions = Number.isInteger(p.healingPotions)
+        ? Math.max(0, Math.min(p.healingPotions, getMaxHealingPotions(p.level)))
+        : 0;
     p.mainHand = p.mainHand && WEAPONS_DATABASE.find(weapon => weapon.id === p.mainHand.id) || p.mainHand;
     p.offHand = p.offHand && WEAPONS_DATABASE.find(weapon => weapon.id === p.offHand.id) || p.offHand;
     const startingClass = Object.values(CLASSES).find(classData => classData.name === p.className);
@@ -516,6 +615,7 @@ function selectClass(classKey) {
         aowStreak: 0,
         basicAttackStreak: 0,
         weaponAttackStreak: 0,
+        healingPotions: 0,
         talismans: [null, null],
         magicType: startingWeapon.isCatalyst ? startingWeapon.type : null,
         knownSpells: startingWeapon.isCatalyst ? getStartingSpells(startingWeapon.type, base) : []
@@ -537,7 +637,7 @@ function spawnEnemy() {
         template = BOSSES[bossIdx];
         const scaledHp = calculateScaledHp(template.hp, playerLevel) + 10;
 
-        gameState.enemy = { name: template.name, maxHp: scaledHp, currentHp: scaledHp, dice: template.dice, sides: template.sides, bonus: template.bonus, xp: template.xp, isBoss: true };
+        gameState.enemy = { name: template.name, maxHp: scaledHp, currentHp: scaledHp, dice: template.dice, sides: template.sides, bonus: template.bonus, xp: template.xp, isBoss: true, statusEffects: createEnemyStatusEffects() };
         log(`🚨 <strong class="boss-text">BOSS ENCOUNTER: ${gameState.enemy.name}</strong> (${gameState.enemy.currentHp} HP)!`);
         return;
     }
@@ -556,7 +656,7 @@ function spawnEnemy() {
     template = tierList[Math.floor(Math.random() * tierList.length)];
     const scaledHp = calculateScaledHp(template.hp, playerLevel) + 10;
 
-    gameState.enemy = { name: template.name, maxHp: scaledHp, currentHp: scaledHp, dice: template.dice, sides: template.sides, bonus: template.bonus, xp: template.xp + (playerLevel * 2), isBoss: false };
+    gameState.enemy = { name: template.name, maxHp: scaledHp, currentHp: scaledHp, dice: template.dice, sides: template.sides, bonus: template.bonus, xp: template.xp + (playerLevel * 2), isBoss: false, statusEffects: createEnemyStatusEffects() };
     log(`Encountered <strong class="damage-text">${gameState.enemy.name}</strong> (${gameState.enemy.currentHp} HP)!`);
 }
 
@@ -594,10 +694,19 @@ function allocateStat(statKey) {
 }
 
 function triggerLootDrop() {
-    if (Math.random() < 0.60) {
+    const p = gameState.player;
+    if (p.healingPotions < getMaxHealingPotions(p.level) && Math.random() < 0.15) {
+        p.healingPotions += 1;
+        log(`<strong class="healing-text">Healing Flask</strong> found (${p.healingPotions}/${getMaxHealingPotions(p.level)}).`, "system-msg");
+    }
+
+    if (Math.random() < 0.50) {
+        const weaponDrops = p.magicType
+            ? []
+            : WEAPONS_DATABASE.filter(item => !item.isCatalyst).map(item => ({ item, weight: 1 }));
         const lootPool = [
-            ...(gameState.player.magicType ? [] : WEAPONS_DATABASE.map(item => ({ item, weight: 1 }))),
-            ...getAvailableSpellDrops(gameState.player).map(spell => ({ item: createSpellLootItem(spell), weight: 1 })),
+            ...weaponDrops,
+            ...getAvailableSpellDrops(p).map(spell => ({ item: createSpellLootItem(spell), weight: 1 })),
             ...TALISMAN_DATABASE.map(item => ({
                 item,
                 weight: { regular: 0.5, epic: 0.25, legendary: 0.125 }[item.rarity] || 0.5
@@ -611,6 +720,23 @@ function triggerLootDrop() {
         const droppedName = droppedItem.kind === "talisman" ? talismanNameMarkup(droppedItem) : droppedItem.name;
         log(`🎁 ${dropType} Dropped: <strong class="highlight">${droppedName}</strong>! Actions frozen—Choose an option on left.`, "system-msg");
     }
+    saveGame();
+}
+
+function useHealingPotion() {
+    const p = gameState.player;
+    if (!p || p.healingPotions <= 0 || p.currentHp >= p.maxHp || gameState.droppedItem || enemyTurnPending) return;
+
+    const healed = Math.min(Math.ceil(p.maxHp * 0.5), p.maxHp - p.currentHp);
+    p.healingPotions -= 1;
+    p.currentHp += healed;
+    p.aowStreak = 0;
+    p.basicAttackStreak = 0;
+    p.weaponAttackStreak = 0;
+    log(`Used a Healing Flask and restored ${healed} HP.`, "system-msg");
+    scheduleEnemyTurn();
+    saveGame();
+    renderUI();
 }
 
 function equipDroppedItem(slot) {
@@ -706,18 +832,24 @@ function enemyTurn() {
     const p = gameState.player;
     if (!e || e.currentHp <= 0) return;
 
+    const statuses = normalizeEnemyStatusEffects(e);
     const earlyGameBonus = !e.isBoss && p.level < 11 ? Math.floor(Math.random() * 4) + 3 : 0;
     const rolledDamage = rollDice(e.dice, e.sides) + e.bonus + earlyGameBonus;
     const blockReduction = p.isBlocking
         ? hasTalisman(p, "pearlshield-talisman") ? 0.75 : 0.5
         : 0;
-    const damage = blockReduction ? Math.ceil(rolledDamage * (1 - blockReduction)) : rolledDamage;
+    const blockedDamage = blockReduction ? Math.ceil(rolledDamage * (1 - blockReduction)) : rolledDamage;
+    const damage = statuses.frostbite > 0 ? Math.max(1, Math.floor(blockedDamage * 0.8)) : blockedDamage;
+    if (statuses.frostbite > 0) statuses.frostbite -= 1;
     p.isBlocking = false;
     p.currentHp = Math.max(0, p.currentHp - damage);
     p.weaponAttackStreak = 0;
     flashBloodScreen();
 
     log(`The <strong>${e.name}</strong> strikes for <span class="damage-text">${damage} damage</span>!`);
+
+    tickEnemyDamageStatuses(e, "the enemy attack");
+    if (e.currentHp <= 0) checkEnemyDefeated();
 
     if (p.currentHp <= 0) {
         log(`☠️ <strong class="damage-text">YOU DIED</strong>`, "system-msg");
@@ -782,14 +914,18 @@ function executeSingleAttack(slot) {
     const bonus = calculateWeaponBonus(weapon, stats);
     const rolledDamage = rollDice(weapon.diceNum, weapon.diceSides) + bonus;
     const damageResult = applyWeaponTalismanDamage(p, weapon, rolledDamage);
+    const frostbiteBurst = consumeFrostbiteForFireAttack(e, weapon.name);
+    const directDamage = frostbiteBurst ? damageResult.damage * 2 : damageResult.damage;
+    const finalDamage = applyEnemyDamage(directDamage);
     p.aowStreak = 0;
     p.weaponAttackStreak = (p.weaponAttackStreak || 0) + 1;
     const healed = applyConsecutiveAttackHealing(p);
 
     p.currentAp -= weapon.ap;
-    e.currentHp = Math.max(0, e.currentHp - damageResult.damage);
+    e.currentHp = Math.max(0, e.currentHp - finalDamage);
 
-    log(`Struck with <strong>${weapon.name}</strong> dealing <span class="damage-text">${damageResult.damage} damage</span>${damageResult.bonusDamage ? ` (${rolledDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}!`, "combat-msg combat-hit");
+    log(`Struck with <strong>${weapon.name}</strong> dealing <span class="damage-text">${finalDamage} damage</span>${damageResult.bonusDamage ? ` (${rolledDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}${frostbiteBurst ? " (Frostbite burst)" : finalDamage > directDamage ? ` (${finalDamage - directDamage} Frostbite bonus)` : ''}!`, "combat-msg combat-hit");
+    tickEnemyDamageStatuses(e, "your attack");
     if (healed) log(`Godskin Swaddling Cloth restores ${healed} HP.`, "system-msg");
 
     if (!checkEnemyDefeated() && p.currentAp === 0) {
@@ -818,17 +954,25 @@ function executeDualAttack() {
     const b2 = calculateWeaponBonus(p.offHand, stats);
     const rolledMainDamage = rollDice(p.mainHand.diceNum, p.mainHand.diceSides) + b1;
     const rolledOffDamage = rollDice(p.offHand.diceNum, p.offHand.diceSides) + b2;
-    const dmg1 = applyWeaponTalismanDamage(p, p.mainHand, rolledMainDamage, false, 0).damage;
-    const dmg2 = applyWeaponTalismanDamage(p, p.offHand, rolledOffDamage, false, 1).damage;
+    let dmg1 = applyWeaponTalismanDamage(p, p.mainHand, rolledMainDamage, false, 0).damage;
+    let dmg2 = applyWeaponTalismanDamage(p, p.offHand, rolledOffDamage, false, 1).damage;
+    const frostbiteBurst = consumeFrostbiteForFireAttack(e, p.mainHand.name)
+        || consumeFrostbiteForFireAttack(e, p.offHand.name);
+    if (frostbiteBurst) {
+        if (/fire|flame|lava/i.test(p.mainHand.name)) dmg1 *= 2;
+        else dmg2 *= 2;
+    }
     const totalDmg = Math.floor(dmg1 + (dmg2 * stats.dex / 100));
+    const finalDamage = applyEnemyDamage(totalDmg);
     p.aowStreak = 0;
     p.basicAttackStreak = 0;
     p.weaponAttackStreak = (p.weaponAttackStreak || 0) + 2;
 
     p.currentAp -= dualAp;
-    e.currentHp = Math.max(0, e.currentHp - totalDmg);
+    e.currentHp = Math.max(0, e.currentHp - finalDamage);
 
-    log(`<strong>Dual Strike</strong> (${p.mainHand.name} + ${p.offHand.name}; off-hand scaled by DEX ${stats.dex}/100) dealt <span class="damage-text">${totalDmg} damage</span>!`, "combat-msg combat-hit");
+    log(`<strong>Dual Strike</strong> (${p.mainHand.name} + ${p.offHand.name}; off-hand scaled by DEX ${stats.dex}/100) dealt <span class="damage-text">${finalDamage} damage</span>${frostbiteBurst ? " (Frostbite burst)" : finalDamage > totalDmg ? ` (${finalDamage - totalDmg} Frostbite bonus)` : ''}!`, "combat-msg combat-hit");
+    tickEnemyDamageStatuses(e, "your attack");
 
     if (!checkEnemyDefeated() && p.currentAp === 0) {
         scheduleEnemyTurn();
@@ -859,14 +1003,18 @@ function executeAshOfWar(slot) {
     const rolledDamage = rollDice(profile.diceNum, profile.diceSides) + profile.bonus;
     const fatiguedDamage = Math.max(1, Math.floor(rolledDamage * fatigueMultiplier));
     const damageResult = applyWeaponTalismanDamage(p, weapon, fatiguedDamage, true);
+    const frostbiteBurst = consumeFrostbiteForFireAttack(e, weapon.aowName);
+    const directDamage = frostbiteBurst ? damageResult.damage * 2 : damageResult.damage;
+    const finalDamage = applyEnemyDamage(directDamage);
     p.aowStreak += 1;
     p.basicAttackStreak = 0;
     p.weaponAttackStreak = (p.weaponAttackStreak || 0) + 1;
 
     p.currentAp -= profile.apCost;
-    e.currentHp = Math.max(0, e.currentHp - damageResult.damage);
+    e.currentHp = Math.max(0, e.currentHp - finalDamage);
 
-    log(`<strong>Ash of War: ${weapon.aowName}</strong> (${profile.diceNum}d${profile.diceSides}+${profile.bonus}, max ${profile.maxDamage}; ${profile.apCost} AP${repeatPenalty ? `; fatigue -${repeatPenalty}%` : ''}) dealt <span class="damage-text">${damageResult.damage} damage</span>${damageResult.bonusDamage ? ` (${fatiguedDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}!`, "combat-msg combat-hit combat-hit--special");
+    log(`<strong>Ash of War: ${weapon.aowName}</strong> (${profile.diceNum}d${profile.diceSides}+${profile.bonus}, max ${profile.maxDamage}; ${profile.apCost} AP${repeatPenalty ? `; fatigue -${repeatPenalty}%` : ''}) dealt <span class="damage-text">${finalDamage} damage</span>${damageResult.bonusDamage ? ` (${fatiguedDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}${frostbiteBurst ? " (Frostbite burst)" : finalDamage > directDamage ? ` (${finalDamage - directDamage} Frostbite bonus)` : ''}!`, "combat-msg combat-hit combat-hit--special");
+    tickEnemyDamageStatuses(e, "your attack");
 
     if (!checkEnemyDefeated() && p.currentAp === 0) {
         scheduleEnemyTurn();
@@ -917,17 +1065,22 @@ function castSpell(spellIdx) {
         return;
     }
 
-    const bonus = calculateSpellBonus(spell, stats);
-    const rolledDamage = rollDice(spell.diceNum, spell.diceSides) + bonus;
+    const profile = getSpellAttackProfile(spell, stats);
+    const rolledDamage = rollDice(profile.diceNum, profile.diceSides) + profile.bonus;
     const damageResult = applySpellTalismanDamage(p, rolledDamage);
+    const frostbiteBurst = consumeFrostbiteForFireAttack(e, spell.name);
+    const appliedStatus = tryApplySpellStatus(e, spell);
+    const directDamage = frostbiteBurst ? damageResult.damage * 2 : damageResult.damage;
+    const finalDamage = applyEnemyDamage(directDamage);
 
     p.currentAp -= spell.ap;
     p.aowStreak = 0;
     p.basicAttackStreak = 0;
     p.weaponAttackStreak = 0;
-    e.currentHp = Math.max(0, e.currentHp - damageResult.damage);
+    e.currentHp = Math.max(0, e.currentHp - finalDamage);
 
-    log(`Casted <strong class="magic-msg">${spell.name}</strong> dealing <span class="damage-text">${damageResult.damage} magic damage</span>${damageResult.bonusDamage ? ` (${rolledDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}!`, "combat-msg combat-hit combat-hit--magic");
+    log(`Casted <strong class="magic-msg">${spell.name}</strong> (${profile.diceNum}d${profile.diceSides}+${profile.bonus}, ${spell.ap} AP) dealing <span class="damage-text">${finalDamage} magic damage</span>${damageResult.bonusDamage ? ` (${rolledDamage} + ${damageResult.bonusDamage} talisman bonus)` : ''}${frostbiteBurst ? " (Frostbite burst)" : finalDamage > directDamage ? ` (${finalDamage - directDamage} Frostbite bonus)` : ''}${appliedStatus === "burn" ? " (Burn proc)" : ''}!`, "combat-msg combat-hit combat-hit--magic");
+    tickEnemyDamageStatuses(e, "your attack");
 
     if (!checkEnemyDefeated() && p.currentAp === 0) {
         scheduleEnemyTurn();
@@ -1093,7 +1246,8 @@ function tutorialCastSpell() {
     const spell = SPELLS_DATABASE.find(entry => entry.name === "Catch Flame");
     if (!t || t.finished || !t.offHand.isCatalyst || t.twoHanding || t.stats[spell.reqStat] < spell.minStat || t.ap < spell.ap) return;
 
-    const damage = rollDice(spell.diceNum, spell.diceSides) + calculateSpellBonus(spell, t.stats);
+    const profile = getSpellAttackProfile(spell, t.stats);
+    const damage = rollDice(profile.diceNum, profile.diceSides) + profile.bonus;
     t.ap -= spell.ap;
     tutorialDealDamage(damage, spell.name, `${spell.name} costs ${spell.ap} AP and scales with FAI. INT gates sorceries; FAI gates incantations.`, false);
 }
@@ -1301,6 +1455,7 @@ function renderUI() {
         <div class="stat-item">AP: <span class="stat-value">${p.currentAp}/${p.maxAp}</span></div>
         <div class="stat-item">VIG: <span class="stat-value">${formatStat('vig')}</span> STR: <span class="stat-value">${formatStat('str')}</span> DEX: <span class="stat-value">${formatStat('dex')}</span> INT: <span class="stat-value">${formatStat('int')}</span> FAI: <span class="stat-value">${formatStat('fai')}</span></div>
         <div class="stat-item">Target: <span class="${e && e.isBoss ? 'boss-text' : 'damage-text'}">${e ? e.name : 'None'} (${e ? e.currentHp : 0}/${e ? e.maxHp : 0} HP)</span></div>
+        <div class="stat-item">Effects: <span class="status-value">${getEnemyStatusSummary(e)}</span></div>
     `;
 
     const isFrozen = gameState.droppedItem !== null || enemyTurnPending;
@@ -1345,8 +1500,8 @@ function renderUI() {
                 const hasMatchingCatalyst = [p.mainHand, p.offHand].some(item => item && item.isCatalyst && item.type === spell.type);
                 const isKnownSpell = !p.magicType || (spell.type === p.magicType && p.knownSpells.includes(spell.name));
                 if (hasMatchingCatalyst && isKnownSpell && effectiveStats[spell.reqStat] >= spell.minStat) {
-                    const b = calculateSpellBonus(spell, effectiveStats);
-                    const spellLabel = formatDiceLabel(spell.name, spell.diceNum, spell.diceSides, b, spell.ap);
+                    const profile = getSpellAttackProfile(spell, effectiveStats);
+                    const spellLabel = formatDiceLabel(spell.name, profile.diceNum, profile.diceSides, profile.bonus, spell.ap);
                     actionsElem.innerHTML += `<button class="btn btn-magic" ${isFrozen ? 'disabled' : ''} onclick="castSpell(${idx})">${spellLabel}</button>`;
                 }
             });
@@ -1356,6 +1511,7 @@ function renderUI() {
     }
 
     actionsElem.innerHTML += `<button class="btn btn-danger" onclick="resetGame()">Reset Save</button>`;
+    actionsElem.innerHTML += `<button class="btn healing-potion-btn" aria-label="Use Healing Flask, ${p.healingPotions} remaining" title="Healing Flask: restores up to 50% of max HP and ends your turn" ${isFrozen || p.healingPotions <= 0 || p.currentHp >= p.maxHp ? 'disabled' : ''} onclick="useHealingPotion()"><span aria-hidden="true">🧪</span> ${p.healingPotions}</button>`;
 
     renderAsciiTracker();
 }

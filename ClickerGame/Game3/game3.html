@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#153a3a">
+	<title>Rooftop Rumble | Local PvP</title>
+	<link rel="stylesheet" href="game3.css">
+</head>
+<body>
+	<main class="game-shell" aria-label="Rooftop Rumble local two-player arena fighter">
+		<canvas id="arena" aria-label="Two-player rooftop fighting arena"></canvas>
+		<div class="screen-grain" aria-hidden="true"></div>
+
+		<header class="hud">
+			<section class="fighter-hud fighter-hud-one" aria-label="Player one health">
+				<div class="fighter-label"><span class="player-mark">01</span><span class="fighter-name">MICA</span><span class="round-wins" id="winsOne">0 W</span></div>
+				<div class="health-track"><div class="health-fill health-one" id="healthOne"></div></div>
+			</section>
+			<div class="match-center"><div class="match-label">ROOFTOP LEAGUE</div><div class="round-count" id="roundCount">FIRST TO 3</div></div>
+			<section class="fighter-hud fighter-hud-two" aria-label="Player two health">
+				<div class="fighter-label"><span class="round-wins" id="winsTwo">0 W</span><span class="fighter-name">BRICK</span><span class="player-mark">02</span></div>
+				<div class="health-track"><div class="health-fill health-two" id="healthTwo"></div></div>
+			</section>
+		</header>
+
+		<div class="round-callout" id="roundCallout" aria-live="polite"></div>
+
+		<section class="start-screen" id="startScreen" aria-label="Game start and controls">
+			<div class="start-panel">
+				<div class="eyebrow">LOCAL MULTIPLAYER / TWO PLAYERS</div>
+				<h1 id="screenTitle">Rooftop<br><em>Rumble</em></h1>
+				<p id="screenCopy">One roof. Two rivals. First to three rounds takes the skyline.</p>
+				<div class="control-columns">
+					<div class="control-set"><span class="control-title"><i class="swatch swatch-one"></i> MICA / PLAYER 1</span><span><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> Move</span><span><kbd>F</kbd> Sword</span></div>
+					<div class="control-set"><span class="control-title"><i class="swatch swatch-two"></i> BRICK / PLAYER 2</span><span><kbd>↑</kbd> <kbd>←</kbd> <kbd>↓</kbd> <kbd>→</kbd> Move</span><span><kbd>ENTER</kbd> Sword</span></div>
+				</div>
+				<button class="start-button" id="startButton" type="button"><span>Start the bout</span><b aria-hidden="true">↗</b></button>
+				<div class="match-note"><kbd>R</kbd> Restart round</div>
+			</div>
+		</section>
+
+		<footer class="footer-hud"><span>NO GADGETS. NO REFEREE.</span><span><b>R</b> RESET ROUND</span></footer>
+	</main>
+	<script src="game3.js"></script>
+</body>
+</html>
