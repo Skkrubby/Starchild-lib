@@ -8,66 +8,37 @@ const HEAVY_WEAPON_IDS = new Set([25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
 
 // --- 6 BASE CLASSES ---
 const CLASSES = {
-    vagabond:  { name: "Outcast",  level: 9,  vig: 15, end: 11, str: 14, dex: 13, int: 9,  fai: 9,  weaponId: 11 },
-    bandit:    { name: "Bandit",    level: 5,  vig: 10, end: 10, str: 9,  dex: 19, int: 9,  fai: 8,  weaponId: 0 },
-    astrologer:{ name: "Stargazer",level: 6,  vig: 9,  end: 9,  str: 8,  dex: 12, int: 16, fai: 7,  weaponId: 50 },
-    prophet:   { name: "Bishhop",   level: 7,  vig: 10, end: 8,  str: 11, dex: 10, int: 7,  fai: 16, weaponId: 51 },
-    samurai:   { name: "Ronin",   level: 9,  vig: 13, end: 14, str: 10, dex: 15, int: 9,  fai: 8,  weaponId: 8 },
-    wretch:    { name: "Deserted",    level: 1,  vig: 10, end: 10, str: 10, dex: 10, int: 10, fai: 10, weaponId: 1 }
+    vagabond:  { name: "Outcast",  level: 9,  vig: 15, end: 11, str: 14, dex: 13, int: 9,  fai: 9,  weaponId: 17 },
+    bandit:    { name: "Bandit",    level: 5,  vig: 10, end: 10, str: 9,  dex: 19, int: 9,  fai: 8,  weaponId: 8 },
+    astrologer:{ name: "Stargazer",level: 6,  vig: 9,  end: 9,  str: 8,  dex: 12, int: 16, fai: 7,  weaponId: 19 },
+    prophet:   { name: "Bishhop",   level: 7,  vig: 10, end: 8,  str: 11, dex: 10, int: 7,  fai: 16, weaponId: 20 },
+    samurai:   { name: "Ronin",   level: 9,  vig: 13, end: 14, str: 10, dex: 15, int: 9,  fai: 8,  weaponId: 16 },
+    wretch:    { name: "Deserted",    level: 1,  vig: 10, end: 10, str: 10, dex: 10, int: 10, fai: 10, weaponId: 12 }
 };
 
 // --- WEAPONS DATABASE ---
 const WEAPONS_DATABASE = [
-    { id: 0, name: "Cutlass", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "B", stat2: "dex", tier2: "D", aowName: "Blood Slash", aowDice: 1, aowSides: 8 },
-    { id: 1, name: "Shortsword", diceNum: 1, diceSides: 6, ap: 1, stat1: "str", tier1: "D", stat2: "dex", tier2: "D", aowName: "Impaling Thrust", aowDice: 1, aowSides: 8 },
-    { id: 2, name: "Main Gauche", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "A", tier2: null, aowName: "Parry Strike", aowDice: 1, aowSides: 6 },
-    { id: 3, name: "Misericorde", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "S", tier2: null, aowName: "Backhanded Thrust", aowDice: 1, aowSides: 10 },
-    { id: 4, name: "Short Katana", diceNum: 1, diceSides: 6, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "E", aowName: "Blade Rush", aowDice: 1, aowSides: 8 },
-    { id: 5, name: "Five Fingerd Dagger", diceNum: 1, diceSides: 6, ap: 1, stat1: "str", tier1: "S", tier2: null, aowName: "Beastial Slice", aowDice: 1, aowSides: 8 },
-    { id: 6, name: "Scorpion’s Stinger", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "B", stat2: "dex", tier2: "C", aowName: "Toxic Sting", aowDice: 1, aowSides: 6 },
-    { id: 7, name: "Outlander Sickle", diceNum: 1, diceSides: 6, ap: 1, stat1: "dex", tier1: "C", tier2: null, aowName: "Harvest Flail", aowDice: 1, aowSides: 8 },
-    { id: 8, name: "Forgotten Katana", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Unsheathe", aowDice: 2, aowSides: 6 },
-    { id: 9, name: "Odachi", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "A", stat2: "str", tier2: "E", aowName: "Piercing Fang", aowDice: 1, aowSides: 12 },
-    { id: 10, name: "Broadsword", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Square Off", aowDice: 1, aowSides: 10 },
-    { id: 11, name: "Longsword", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "C", stat2: "dex", tier2: "C", aowName: "Impaling Thrust", aowDice: 1, aowSides: 8 },
-    { id: 12, name: "Serpentine Blade", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "A", stat2: "dex", tier2: "D", aowName: "Venomous Flurry", aowDice: 1, aowSides: 8 },
-    { id: 13, name: "Dragon Scale Blade", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "S", tier2: null, aowName: "Ice Lightning Sword", aowDice: 2, aowSides: 6 },
-    { id: 14, name: "Stone Sword", diceNum: 1, diceSides: 8, ap: 1, stat1: "dex", tier1: "C", tier2: null, aowName: "Hidden Thrust", aowDice: 1, aowSides: 8 },
-    { id: 15, name: "Warhawk’s Talon", diceNum: 1, diceSides: 8, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "E", aowName: "Talon Flurry", aowDice: 1, aowSides: 10 },
-    { id: 16, name: "Weathered Straight Sword", diceNum: 1, diceSides: 6, ap: 1, stat1: "str", tier1: "D", stat2: "dex", tier2: "D", aowName: "Wild Slash", aowDice: 1, aowSides: 8 },
-    { id: 17, name: "Holy Knight’s Sword", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "C", stat2: "fai", tier2: "C", aowName: "Sacred Blade", aowDice: 1, aowSides: 10 },
-    { id: 18, name: "Scimitar", diceNum: 1, diceSides: 6, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "E", aowName: "Spinning Slash", aowDice: 1, aowSides: 8 },
-    { id: 19, name: "Falchion", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "C", stat2: "dex", tier2: "C", aowName: "Vacuum Slice", aowDice: 1, aowSides: 10 },
-    { id: 20, name: "Grossmesser", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "B", tier2: null, aowName: "Spinning Slash", aowDice: 1, aowSides: 8 },
-    { id: 23, name: "Estoc", diceNum: 1, diceSides: 8, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Shield Crash", aowDice: 1, aowSides: 8 },
-    { id: 24, name: "Cleanrot Knight’s Sword", diceNum: 1, diceSides: 8, ap: 1, stat1: "dex", tier1: "B", stat2: "fai", tier2: "D", aowName: "Sacred Phalanx", aowDice: 1, aowSides: 10 },
-    { id: 25, name: "Great Epee", diceNum: 1, diceSides: 10, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Giant Hunt", aowDice: 1, aowSides: 12 },
-    { id: 26, name: "Claymore", diceNum: 2, diceSides: 6, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Lion’s Claw", aowDice: 1, aowSides: 12 },
-    { id: 27, name: "Greatsword", diceNum: 2, diceSides: 8, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Stamp (Upward Cut)", aowDice: 2, aowSides: 10 },
-    { id: 28, name: "Zweihänder", diceNum: 3, diceSides: 6, ap: 2, stat1: "str", tier1: "A", stat2: "dex", tier2: "D", aowName: "Waves of Darkness", aowDice: 1, aowSides: 12 },
-    { id: 29, name: "Flamberge", diceNum: 2, diceSides: 6, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Bloody Slash", aowDice: 1, aowSides: 10 },
-    { id: 30, name: "Knight’s Greatsword", diceNum: 2, diceSides: 6, ap: 1, stat1: "dex", tier1: "A", tier2: null, aowName: "Spinning Slash", aowDice: 1, aowSides: 10 },
-    { id: 31, name: "Exiled Knight’s Greatsword", diceNum: 2, diceSides: 6, ap: 1, stat1: "str", tier1: "A", tier2: null, aowName: "Impaling Thrust", aowDice: 1, aowSides: 12 },
-    { id: 32, name: "Lordsworn’s Greatsword", diceNum: 2, diceSides: 6, ap: 1, stat1: "str", tier1: "C", stat2: "dex", tier2: "C", aowName: "Upward Slash", aowDice: 1, aowSides: 10 },
-    { id: 33, name: "Troll’s Collosal Sword", diceNum: 2, diceSides: 8, ap: 2, stat1: "str", tier1: "A", tier2: null, aowName: "Troll’s Roar", aowDice: 2, aowSides: 8 },
-    { id: 34, name: "Royal Greatsword", diceNum: 2, diceSides: 8, ap: 2, stat1: "str", tier1: "B", stat2: "int", tier2: "C", aowName: "Wolf’s Assault", aowDice: 2, aowSides: 10 },
-    { id: 35, name: "Crescent Axe", diceNum: 1, diceSides: 12, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "C", aowName: "War Cry", aowDice: 2, aowSides: 6 },
-    { id: 36, name: "Battle Axe", diceNum: 1, diceSides: 10, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Wild Strikes", aowDice: 1, aowSides: 8 },
-    { id: 37, name: "Highland Axe", diceNum: 1, diceSides: 10, ap: 1, stat1: "str", tier1: "C", stat2: "dex", tier2: "C", aowName: "Barbaric Roar", aowDice: 1, aowSides: 10 },
-    { id: 38, name: "Executioner’s Greataxe", diceNum: 2, diceSides: 8, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Heavy Chop", aowDice: 2, aowSides: 10 },
-    { id: 39, name: "Warhammer", diceNum: 1, diceSides: 10, ap: 1, stat1: "str", tier1: "A", tier2: null, aowName: "Ground Slam", aowDice: 1, aowSides: 12 },
-    { id: 40, name: "Mace", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "A", tier2: null, aowName: "Endure Strike", aowDice: 1, aowSides: 8 },
-    { id: 41, name: "Morning Star", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Heavy Spike", aowDice: 1, aowSides: 10 },
-    { id: 42, name: "Flail", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Spinning Chain", aowDice: 1, aowSides: 8 },
-    { id: 43, name: "Naginata", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Repeating Thrust", aowDice: 1, aowSides: 6 },
-    { id: 44, name: "Pike", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Charge", aowDice: 1, aowSides: 10 },
-    { id: 45, name: "Partisan", diceNum: 1, diceSides: 10, ap: 1, stat1: "str", tier1: "C", stat2: "dex", tier2: "C", aowName: "Spectral Lance", aowDice: 1, aowSides: 8 },
-    { id: 46, name: "Riders Glaive", diceNum: 2, diceSides: 6, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Phantom Slash", aowDice: 2, aowSides: 8 },
-    { id: 47, name: "Lucerne", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "C", aowName: "Giant Hunt", aowDice: 1, aowSides: 12 },
-    { id: 48, name: "Great Halberd", diceNum: 2, diceSides: 6, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Vacuum Slice", aowDice: 2, aowSides: 6 },
-    { id: 49, name: "Recusants Saw", diceNum: 1, diceSides: 12, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Serrated Slash", aowDice: 1, aowSides: 10 },
-    { id: 50, name: "Scorcerers Staff", isCatalyst: true, type: "sorcery" },
-    { id: 51, name: "Holy Seal", isCatalyst: true, type: "incantation" }
+    { id: 0, name: "Greatsword", diceNum: 2, diceSides: 8, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Stamp (Upward Cut)", aowDice: 2, aowSides: 10 },
+    { id: 1, name: "Executioner’s Greataxe", diceNum: 2, diceSides: 8, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Heavy Chop", aowDice: 2, aowSides: 10 },
+    { id: 2, name: "Riders Glaive", diceNum: 2, diceSides: 6, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Phantom Slash", aowDice: 2, aowSides: 8 },
+    { id: 3, name: "Great Halberd", diceNum: 2, diceSides: 6, ap: 2, stat1: "str", tier1: "S", tier2: null, aowName: "Vacuum Slice", aowDice: 2, aowSides: 6 },
+    { id: 4, name: "Troll’s Collosal Sword", diceNum: 2, diceSides: 8, ap: 2, stat1: "str", tier1: "A", tier2: null, aowName: "Troll’s Roar", aowDice: 2, aowSides: 8 },
+    { id: 5, name: "Zweihänder", diceNum: 3, diceSides: 6, ap: 2, stat1: "str", tier1: "A", stat2: "dex", tier2: "D", aowName: "Waves of Darkness", aowDice: 1, aowSides: 12 },
+    { id: 6, name: "Dragon Scale Blade", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "S", tier2: null, aowName: "Ice Lightning Sword", aowDice: 2, aowSides: 6 },
+    { id: 7, name: "Misericorde", diceNum: 1, diceSides: 4, ap: 1, stat1: "dex", tier1: "S", tier2: null, aowName: "Backhanded Thrust", aowDice: 1, aowSides: 10 },
+    { id: 8, name: "Five Fingerd Dagger", diceNum: 1, diceSides: 6, ap: 1, stat1: "str", tier1: "S", tier2: null, aowName: "Beastial Slice", aowDice: 1, aowSides: 8 },
+    { id: 9, name: "Exiled Knight’s Greatsword", diceNum: 2, diceSides: 6, ap: 1, stat1: "str", tier1: "A", tier2: null, aowName: "Impaling Thrust", aowDice: 1, aowSides: 12 },
+    { id: 10, name: "Knight’s Greatsword", diceNum: 2, diceSides: 6, ap: 1, stat1: "dex", tier1: "A", tier2: null, aowName: "Spinning Slash", aowDice: 1, aowSides: 10 },
+    { id: 11, name: "Warhammer", diceNum: 1, diceSides: 10, ap: 1, stat1: "str", tier1: "A", tier2: null, aowName: "Ground Slam", aowDice: 1, aowSides: 12 },
+    { id: 12, name: "Mace", diceNum: 1, diceSides: 8, ap: 1, stat1: "str", tier1: "A", tier2: null, aowName: "Endure Strike", aowDice: 1, aowSides: 8 },
+    { id: 13, name: "Odachi", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "A", stat2: "str", tier2: "E", aowName: "Piercing Fang", aowDice: 1, aowSides: 12 },
+    { id: 14, name: "Serpentine Blade", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "A", stat2: "dex", tier2: "D", aowName: "Venomous Flurry", aowDice: 1, aowSides: 8 },
+    { id: 15, name: "Royal Greatsword", diceNum: 2, diceSides: 8, ap: 2, stat1: "str", tier1: "B", stat2: "int", tier2: "C", aowName: "Wolf’s Assault", aowDice: 2, aowSides: 10 },
+    { id: 16, name: "Forgotten Katana", diceNum: 1, diceSides: 10, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Unsheathe", aowDice: 2, aowSides: 6 },
+    { id: 17, name: "Claymore", diceNum: 2, diceSides: 6, ap: 1, stat1: "str", tier1: "B", stat2: "dex", tier2: "D", aowName: "Lion’s Claw", aowDice: 1, aowSides: 12 },
+    { id: 18, name: "Flamberge", diceNum: 2, diceSides: 6, ap: 1, stat1: "dex", tier1: "B", stat2: "str", tier2: "D", aowName: "Bloody Slash", aowDice: 1, aowSides: 10 },
+    { id: 19, name: "Scorcerers Staff", isCatalyst: true, type: "sorcery" },
+    { id: 20, name: "Holy Seal", isCatalyst: true, type: "incantation" }
 ];
 
 const TALISMAN_DATABASE = [
@@ -120,7 +91,6 @@ const SPELLS_DATABASE = [
     { name: "Putrid Dragon's Breath", type: "incantation", reqStat: "fai", minStat: 15, ap: 2, diceNum: 2, diceSides: 8, tier: "S" },
     { name: "Dragons' Ice Breath", type: "incantation", reqStat: "fai", minStat: 16, ap: 2, diceNum: 2, diceSides: 8, tier: "A" },
     { name: "Burn, O Flame!", type: "incantation", reqStat: "fai", minStat: 27, ap: 3, diceNum: 3, diceSides: 12, tier: "A" },
-    { name: "Wrath of Faith", type: "incantation", reqStat: "fai", minStat: 32, ap: 2, diceNum: 3, diceSides: 10, tier: "A" }
 ];
 
 // --- 40 MONSTERS WITH BOSSES ---
