@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elden Text Based Ring | Tutorial</title>
+    <link rel="stylesheet" href="game2.css">
+</head>
+<body class="tutorial-page" data-page="tutorial">
+    <main class="tutorial-shell">
+        <header class="tutorial-header">
+            <div>
+                <p class="tutorial-kicker">FIELD GUIDE / PRACTICE</p>
+                <h1 id="tutorial-title" class="game-title">Learn as you fight</h1>
+                <p class="tutorial-subtitle">A guided spar against one Training Hollow. This practice never changes your saved run.</p>
+            </div>
+            <a class="tutorial-nav btn" href="game2.html">Back to Game</a>
+        </header>
+
+        <div class="tutorial-guide-grid">
+            <section class="tutorial-guide">
+                <h2>Build</h2>
+                <p>Choose a class for starting stats and gear. VIG adds 5 maximum HP per point. END 10 gives 4 AP; each 2 END points above or below 10 change maximum AP by 1. Level-ups grant bankable stat points; allocate one at a time, and VIG fully restores HP when chosen. STR scales Heavy and Colossal weapons; DEX scales Light weapons.</p>
+            </section>
+            <section class="tutorial-guide">
+                <h2>Hands & Stances</h2>
+                <p>Dual Strike requires two eligible weapons and adds off-hand damage multiplied by DEX / 100. Colossal weapons force two-handing and clear the off-hand. Two-handing other weapons adds no damage, but lets you block.</p>
+            </section>
+            <section class="tutorial-guide">
+                <h2>Turns & Arts of War</h2>
+                <p>Actions spend their listed AP. When AP runs out, the enemy attacks and your AP refills; End Turn gives the enemy a turn early. An Art of War costs the same AP as a basic attack. Consecutive AoWs lose 25% damage each, down to 25%; another action resets fatigue.</p>
+            </section>
+            <section class="tutorial-guide">
+                <h2>Talismans</h2>
+                <p>Equip up to two different talismans. Regular talismans have weight 0.5 in the loot pool, Epic have 0.25, and Legendary have 0.125. Drop descriptions show rarity and effect; equipped slots show names only.</p>
+                <p>Legendary: Shard of Alexander, Rotten Winged Sword Insignia, Moon of Nokstella, and Viridian Amber +3. Epic: Ritual Sword, Winged Sword Insignia, Pearlshield, and Great-Jar's Arsenal. Other talismans are Regular.</p>
+            </section>
+            <section class="tutorial-guide">
+                <h2>Magic & Progress</h2>
+                <p>Staves and seals are spellcasting-only catalysts; they cannot make weapon attacks. Astrologers and Prophets carry four spells, and can replace one with a compatible spell found as loot. Spells use their own dice and INT or FAI scaling. Defeated enemies award XP and may drop gear. Every 10 kills brings a boss. Arcane is not a player stat.</p>
+            </section>
+        </div>
+
+        <section class="tutorial-arena" aria-labelledby="tutorial-enemy-name">
+            <div class="tutorial-arena-heading">
+                <div>
+                    <p class="tutorial-kicker">ENCOUNTER 01</p>
+                    <h2 id="tutorial-enemy-name">Training Hollow</h2>
+                </div>
+                <span id="tutorial-fight-status" class="tutorial-fight-status">READY</span>
+            </div>
+
+            <div class="tutorial-vitals">
+                <label for="tutorial-enemy-hp">Enemy HP <span id="tutorial-enemy-hp-label">120 / 120</span></label>
+                <progress id="tutorial-enemy-hp" class="tutorial-health enemy-health" max="120" value="120"></progress>
+                <label for="tutorial-player-hp">Your HP <span id="tutorial-player-hp-label">50 / 50</span></label>
+                <progress id="tutorial-player-hp" class="tutorial-health player-health" max="50" value="50"></progress>
+                <p id="tutorial-ap-label" class="tutorial-ap">AP: 4 / 4</p>
+            </div>
+
+            <p id="tutorial-narration" class="tutorial-narration" role="status" aria-live="polite">Your practice loadout is a Longsword and Scimitar. Choose an action to begin.</p>
+            <div id="tutorial-log" class="tutorial-log" role="log" aria-live="polite"></div>
+            <div id="tutorial-actions" class="tutorial-actions"></div>
+            <footer class="tutorial-footer">
+                <span>One enemy. Temporary stats. No save changes.</span>
+                <button id="tutorial-restart" class="btn" type="button">Restart spar</button>
+            </footer>
+        </section>
+    </main>
+
+    <script src="game2.js"></script>
+</body>
+</html>
